@@ -4,6 +4,9 @@
  */
 package cluscisummator;
 
+import data.Document;
+import preprocessing.Parser;
+
 /**
  *
  * @author ACER 4741
@@ -11,9 +14,13 @@ package cluscisummator;
 public class CluSciSummator {
 
     /**
-     * @param args the command line arguments
+     * @param args the command line argumentsd
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       String uri = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
+       Parser parser = new Parser();
+       parser.parseDocument(uri);
+       Document parsedDoc = parser.getParsedDocument();
+       System.out.println(parsedDoc.toString());
     }
 }
