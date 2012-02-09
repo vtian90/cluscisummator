@@ -1,0 +1,97 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cluscisummator;
+
+import java.util.HashMap;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+/**
+ *
+ * @author ACER 4741
+ */
+public class CluSciSummator {
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static HashMap<String, Boolean> hashMapTag;
+    
+    public static final String TAG_TITLE = "title";
+    public static final String TAG_AUTHOR = "author";
+    public static final String TAG_AIM = "aim";
+    public static final String TAG_NOV_ADV = "nov_adv";
+    public static final String TAG_CO_GRO = "co_gro";
+    public static final String TAG_OTHR = "othr";
+    public static final String TAG_PREV_OWN = "prev_own";
+    public static final String TAG_OWN_MTHD = "own_mthd";
+    public static final String TAG_OWN_FAIL = "own_fail";
+    public static final String TAG_OWN_RES = "own_res";
+    public static final String TAG_OWN_CONC = "own_conc";
+    public static final String TAG_CODI = "CODI";
+    public static final String TAG_GAP_WEAK = "gap_weak";
+    public static final String TAG_ANTISUPP = "antisupp";
+    public static final String TAG_SUPPORT = "support";
+    public static final String TAG_USE = "use";
+    public static final String TAG_FUT = "fut";
+    
+    public static void main(String[] args) {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            
+            hashMapTag = new HashMap<String, Boolean>();
+            hashMapTag.put(TAG_FIRSTNAME, Boolean.FALSE);
+            hashMapTag.put(TAG_LASTNAME, Boolean.FALSE);
+            hashMapTag.put(TAG_NICKNAME, Boolean.FALSE);
+            hashMapTag.put(TAG_SALARY, Boolean.FALSE);
+            
+            DefaultHandler handler = new DefaultHandler() {
+                
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    //System.out.println("Start Element :" + qName);
+                    hashMapTag.put(qName, Boolean.TRUE);  
+                    //System.out.println("size"+hashMapTag.size());
+                }
+
+                @Override
+                public void endElement(String uri, String localName, String qName) throws SAXException {
+                    //System.out.println("End Element :" + qName);
+                }
+
+                @Override
+                public void characters(char ch[], int start, int length) throws SAXException {
+                    if (hashMapTag.get(TAG_FIRSTNAME)) {
+                        System.out.println("First Name : " + new String(ch, start, length));
+                        hashMapTag.put(TAG_FIRSTNAME, Boolean.FALSE);
+                    }
+                    
+                    if (hashMapTag.get(TAG_LASTNAME)) {
+                        System.out.println("Last Name : " + new String(ch, start, length));
+                        hashMapTag.put(TAG_LASTNAME, Boolean.FALSE);
+                    }
+                    
+                    if (hashMapTag.get(TAG_NICKNAME)) {
+                        System.out.println("Nick Name : " + new String(ch, start, length));
+                        hashMapTag.put(TAG_NICKNAME, Boolean.FALSE);
+                    }
+                    
+                    if (hashMapTag.get(TAG_SALARY)) {
+                        System.out.println("Salary : " + new String(ch, start, length));
+                        hashMapTag.put(TAG_SALARY, Boolean.FALSE);
+                    }
+                }
+            };
+
+            saxParser.parse("D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\cluscisummator\\contoh.xml", handler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
