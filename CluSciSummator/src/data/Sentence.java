@@ -6,7 +6,7 @@ package data;
 
 /**
  *
- * @author ACER 4741
+ * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class Sentence {
     private String _content;

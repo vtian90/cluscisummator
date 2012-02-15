@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author ACER 4741
+ * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class Document {
     private int _ID;
@@ -51,6 +51,11 @@ public class Document {
         this._title = _title;
     }
 
+    
+    public ArrayList<Sentence> getContentByRhetoricalStatus(String tag) {
+        return null;
+    }
+            
     @Override
     public String toString() {
         return "Document{" + "\n\t_ID=" + _ID + ", \n\t_authors=" + _authors + ", \n\t_title=" + _title + ", \n\t_content=" + _content + "\n"+ '}';
