@@ -15,11 +15,15 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
- * @author ACER 4741
+ * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class Parser {   
     private Document _parsedDocument;
-                
+    
+    private String[] _rhetoricalStatusList = {
+        "aim", "nov_adv", "co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
+    };
+    
     enum listTag {
         TAG_PAPER("paper"),
         TAG_TITLE("title"),
@@ -38,17 +42,18 @@ public class Parser {
         TAG_ANTISUPP("antisupp"),
         TAG_SUPPORT("support"),
         TAG_USE("use"),
-        TAG_FU("fut");
+        TAG_FUT("fut");
         
-        private String tagName;
-
+        private String _tagName;
+        
+        
         private listTag(String input) {
-            this.tagName = input;
+            this._tagName = input;
         }
-
+    
         @Override
         public String toString() {
-            return tagName;
+            return _tagName;
         }
     }
 
@@ -56,6 +61,15 @@ public class Parser {
         _parsedDocument = new Document();
     }
    
+    public boolean isTagExist(String tagInput) {
+        for (String tag : _rhetoricalStatusList) {
+            if (tagInput.equalsIgnoreCase(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void parseDocument(String URI) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -80,9 +94,11 @@ public class Parser {
                     } else if (qName.equalsIgnoreCase(listTag.TAG_PAPER.toString())) {
                         _parsedDocument.setAuthors(authors);
                         _parsedDocument.setContent(content);
-                    } else if (qName.equalsIgnoreCase(listTag.TAG_AIM.toString())) {
-                       Sentence sentence = new Sentence(textBuffer.toString().trim(), listTag.TAG_AIM.toString());
-                       content.add(sentence);
+                    } else {
+                        if (isTagExist(qName)) {
+                            Sentence sentence = new Sentence(textBuffer.toString().trim(), qName.toLowerCase());
+                            content.add(sentence);
+                        }
                     }
                 }
 

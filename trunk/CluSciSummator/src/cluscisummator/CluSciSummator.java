@@ -9,7 +9,7 @@ import preprocessing.Parser;
 
 /**
  *
- * @author ACER 4741
+ * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class CluSciSummator {
 
