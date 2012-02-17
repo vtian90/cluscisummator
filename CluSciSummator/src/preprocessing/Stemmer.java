@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package iris;
+package cluscisummator;
 /*
 
    Porter stemmer in Java. The original paper is in

@@ -17,7 +17,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
-public class Parser {   
+public class XMLParser {   
     private Document _parsedDocument;
     
     private String[] _rhetoricalStatusList = {
@@ -57,10 +57,16 @@ public class Parser {
         }
     }
 
-    public Parser() {
+    public XMLParser() {
         _parsedDocument = new Document();
     }
    
+   
+    /**
+     * Method isTagExist : Mengecek apakah 'tagInput' merupakan kategori retorik
+     * @param tagInput
+     * @return boolean
+     */
     public boolean isTagExist(String tagInput) {
         for (String tag : _rhetoricalStatusList) {
             if (tagInput.equalsIgnoreCase(tag)) {
@@ -69,8 +75,14 @@ public class Parser {
         }
         return false;
     }
-    
-    public void parseDocument(String URI) {
+   
+    /**
+     * Method parseDocument : Melakukan parsing satu dokumen
+     * @param URI
+     * @param docID 
+     */
+    public void parseDocument(String URI, int docID) {
+        _parsedDocument.setID(docID);
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
@@ -96,7 +108,7 @@ public class Parser {
                         _parsedDocument.setContent(content);
                     } else {
                         if (isTagExist(qName)) {
-                            Sentence sentence = new Sentence(textBuffer.toString().trim(), qName.toLowerCase());
+                            Sentence sentence = new Sentence(textBuffer.toString().trim(), qName.toLowerCase(), _parsedDocument.getID());
                             content.add(sentence);
                         }
                     }
