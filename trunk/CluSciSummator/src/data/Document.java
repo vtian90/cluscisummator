@@ -51,10 +51,6 @@ public class Document {
         this._title = _title;
     }
 
-    
-    public ArrayList<Sentence> getContentByRhetoricalStatus(String tag) {
-        return null;
-    }
             
     @Override
     public String toString() {
