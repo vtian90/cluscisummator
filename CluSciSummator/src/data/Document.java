@@ -14,9 +14,41 @@ public class Document {
     private int _ID;
     private ArrayList<String> _authors;
     private String _title;
-    private ArrayList<Sentence> _content;
-
+    
+    public ArrayList<String> AIM;
+    public ArrayList<String> NOV_ADV;
+    public ArrayList<String> CO_GRO;
+    public ArrayList<String> OTHR;
+    public ArrayList<String> PREV_OWN;
+    public ArrayList<String> OWN_MTHD;
+    public ArrayList<String> OWN_FAIL;
+    public ArrayList<String> OWN_RES;
+    public ArrayList<String> OWN_CONC;
+    public ArrayList<String> CODI;
+    public ArrayList<String> GAP_WEAK;
+    public ArrayList<String> ANTISUPP;
+    public ArrayList<String> SUPPORT;
+    public ArrayList<String> USE;
+    public ArrayList<String> FUT;
+    
+    
     public Document() {
+        AIM = new ArrayList<String>();
+        NOV_ADV = new ArrayList<String>();
+        CO_GRO = new ArrayList<String>();
+        OTHR = new ArrayList<String>();
+        PREV_OWN = new ArrayList<String>();
+        OWN_MTHD = new ArrayList<String>();
+        OWN_FAIL = new ArrayList<String>();
+        OWN_RES = new ArrayList<String>();
+        OWN_CONC = new ArrayList<String>();
+        CODI = new ArrayList<String>();
+        GAP_WEAK = new ArrayList<String>();
+        ANTISUPP = new ArrayList<String>();
+        SUPPORT = new ArrayList<String>();
+        USE = new ArrayList<String>();
+        FUT = new ArrayList<String>();
+        
     }
 
     public int getID() {
@@ -27,14 +59,12 @@ public class Document {
         return _authors;
     }
 
-    public ArrayList<Sentence> getContent() {
-        return _content;
-    }
 
     public String getTitle() {
         return _title;
     }
 
+    
     public void setID(int _ID) {
         this._ID = _ID;
     }
@@ -43,17 +73,9 @@ public class Document {
         this._authors = _author;
     }
 
-    public void setContent(ArrayList<Sentence> _content) {
-        this._content = _content;
-    }
 
     public void setTitle(String _title) {
         this._title = _title;
-    }
-
-            
-    @Override
-    public String toString() {
-        return "Document{" + "\n\t_ID=" + _ID + ", \n\t_authors=" + _authors + ", \n\t_title=" + _title + ", \n\t_content=" + _content + "\n"+ '}';
-    }
+    }     
+    
 }

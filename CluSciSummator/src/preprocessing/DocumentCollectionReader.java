@@ -12,10 +12,10 @@ import java.util.ArrayList;
  *
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
-public class CorpusReader {
+public class DocumentCollectionReader {
     private DocumentCollection _parsedDocumentCollection;
         
-    public CorpusReader() {
+    public DocumentCollectionReader() {
         _parsedDocumentCollection = new DocumentCollection();
     }
 
