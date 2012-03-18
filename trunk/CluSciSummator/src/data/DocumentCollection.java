@@ -4,7 +4,10 @@
  */
 package data;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import preprocessing.StopwordRemover;
 
 /**
  *
@@ -13,6 +16,8 @@ import java.util.ArrayList;
 public class DocumentCollection {
 
     private ArrayList<Document> _documentCollection;
+    public ArrayList<String> conceptStringsAIM;
+    public ArrayList<ArrayList<Boolean>> documentTransactionsAIM;
 
     public DocumentCollection() {
     }
@@ -25,30 +30,64 @@ public class DocumentCollection {
         this._documentCollection = _documentCollection;
     }
 
-    /**
-     * Method getContentByRhetoricalStatus : Memfilter sentence dengan rhetorical status tertentu dari semua koleksi dokumen
-     * 
-     * @param tag
-     * @return 
-     */
-    public ArrayList<Sentence> getContentByRhetoricalStatus(String tag) {
-        ArrayList<Sentence> result = new ArrayList<Sentence>();
+    public void transactDocumentAIM() throws FileNotFoundException, IOException {
+        ArrayList<String> resultConceptStrings = new ArrayList<String>();
+        ArrayList<ArrayList<Boolean>> resultDocumentTransactions = new ArrayList<ArrayList<Boolean>>();
+
         for (Document doc : _documentCollection) {
-            for (Sentence sentence : doc.getContent()) {
-                if (sentence.getTag().equalsIgnoreCase(tag)) {
-                    Sentence tobeadd = new Sentence(sentence.getContent(), sentence.getTag(), sentence.getDocID());
-                    result.add(sentence);
+            ArrayList<String> sentences = doc.AIM;
+
+            for (int i = 0; i < sentences.size(); ++i) {
+                String a_sentence = sentences.get(i);
+                a_sentence = a_sentence.toLowerCase();
+                StopwordRemover a = new StopwordRemover();
+                a_sentence = a.removeStopword(a_sentence);
+                a_sentence = preprocessing.Stemmer.stem(a_sentence);
+
+                String[] a_sentenceSplit = a_sentence.split(" ");
+                for (int j = 0; j < a_sentenceSplit.length; ++j) {
+                    if (!resultConceptStrings.contains(a_sentenceSplit[j])) {
+                        resultConceptStrings.add(a_sentenceSplit[j]);
+                    }
                 }
             }
         }
-        return result;
+        
+        conceptStringsAIM = resultConceptStrings;
+
+        for (Document doc : _documentCollection) {
+            ArrayList<String> sentences = doc.AIM;
+            
+            ArrayList<Boolean> documentTransaction = new ArrayList<Boolean>(resultConceptStrings.size());
+            for (int i=0; i< resultConceptStrings.size(); ++i) {
+                documentTransaction.add(Boolean.FALSE);
+            }
+            
+            for (int i = 0; i < sentences.size(); ++i) {
+                String a_sentence = sentences.get(i);
+                a_sentence = a_sentence.toLowerCase();
+                StopwordRemover a = new StopwordRemover();
+                a_sentence = a.removeStopword(a_sentence);
+                a_sentence = preprocessing.Stemmer.stem(a_sentence);
+
+                String[] a_sentenceSplit = a_sentence.split(" ");
+                for (int j = 0; j < a_sentenceSplit.length; ++j) {
+                    int indexInConceptStrings = resultConceptStrings.indexOf(a_sentenceSplit[j]);
+                    documentTransaction.set(indexInConceptStrings, Boolean.TRUE);
+                }
+            }
+            resultDocumentTransactions.add(documentTransaction);
+        }
+        documentTransactionsAIM = resultDocumentTransactions;
+        
     }
+    
 
     /**
      * Method getDocumentByID: Mengembalikan Dokumen yang memiliki ID tertentu
      * 
      * @param ID
-     * @return 
+     * @return Document
      */
     public Document getDocumentByID(int ID) {
         boolean found = false;
