@@ -31,55 +31,71 @@ public class DocumentCollection {
     }
 
     public void transactDocumentAIM() throws FileNotFoundException, IOException {
+        long startTime = System.currentTimeMillis();
+        
         ArrayList<String> resultConceptStrings = new ArrayList<String>();
         ArrayList<ArrayList<Boolean>> resultDocumentTransactions = new ArrayList<ArrayList<Boolean>>();
 
-        for (Document doc : _documentCollection) {
-            ArrayList<String> sentences = doc.AIM;
+        ArrayList<ArrayList<String[]>> sentenceSplittedAllDocument = new ArrayList<ArrayList<String[]>>(); //ArrayList dari kalimat, satu kalimat udah displit jadi satu kata yang udah di praproses
 
-            for (int i = 0; i < sentences.size(); ++i) {
-                String a_sentence = sentences.get(i);
+        //Praproses dokumen:
+        for (int i = 0; i < _documentCollection.size(); ++i) {
+            Document doc = _documentCollection.get(i);
+            ArrayList<String> sentences = doc.AIM;
+            ArrayList<String[]> sentenceSplittedDocument = new ArrayList<String[]>();
+            
+            for (int j = 0; j < sentences.size(); ++j) {
+                String a_sentence = sentences.get(j);
+                a_sentence = a_sentence.replaceAll("[^A-Za-z0-9 ]", ""); //buang tanda baca
                 a_sentence = a_sentence.toLowerCase();
+
                 StopwordRemover a = new StopwordRemover();
                 a_sentence = a.removeStopword(a_sentence);
                 a_sentence = preprocessing.Stemmer.stem(a_sentence);
 
                 String[] a_sentenceSplit = a_sentence.split(" ");
-                for (int j = 0; j < a_sentenceSplit.length; ++j) {
-                    if (!resultConceptStrings.contains(a_sentenceSplit[j])) {
-                        resultConceptStrings.add(a_sentenceSplit[j]);
+                sentenceSplittedDocument.add(a_sentenceSplit);
+            }
+            sentenceSplittedAllDocument.add(sentenceSplittedDocument);
+        }
+
+        //Bikin semua konsep dari hasil praproses dokumen:
+        for (int i = 0; i < sentenceSplittedAllDocument.size(); ++i) {
+            ArrayList<String[]> sentenceSplittedDocument = sentenceSplittedAllDocument.get(i);
+            for (int j = 0; j < sentenceSplittedDocument.size(); ++j) {
+                String[] a_sentenceSplit = sentenceSplittedDocument.get(j);
+                for (int k = 0; k < a_sentenceSplit.length; ++k) {
+                    if (!resultConceptStrings.contains(a_sentenceSplit[k]) && a_sentenceSplit[k].length()!=0) {
+                        resultConceptStrings.add(a_sentenceSplit[k]);
                     }
                 }
             }
         }
-        
         conceptStringsAIM = resultConceptStrings;
-
-        for (Document doc : _documentCollection) {
-            ArrayList<String> sentences = doc.AIM;
+        
+        for (int i = 0; i < sentenceSplittedAllDocument.size(); ++i) {
+            ArrayList<String[]> sentenceSplittedDocument = sentenceSplittedAllDocument.get(i);
             
             ArrayList<Boolean> documentTransaction = new ArrayList<Boolean>(resultConceptStrings.size());
-            for (int i=0; i< resultConceptStrings.size(); ++i) {
+            for (int j=0; j< resultConceptStrings.size(); ++j) {
                 documentTransaction.add(Boolean.FALSE);
             }
             
-            for (int i = 0; i < sentences.size(); ++i) {
-                String a_sentence = sentences.get(i);
-                a_sentence = a_sentence.toLowerCase();
-                StopwordRemover a = new StopwordRemover();
-                a_sentence = a.removeStopword(a_sentence);
-                a_sentence = preprocessing.Stemmer.stem(a_sentence);
-
-                String[] a_sentenceSplit = a_sentence.split(" ");
-                for (int j = 0; j < a_sentenceSplit.length; ++j) {
-                    int indexInConceptStrings = resultConceptStrings.indexOf(a_sentenceSplit[j]);
-                    documentTransaction.set(indexInConceptStrings, Boolean.TRUE);
+            for (int j = 0; j < sentenceSplittedDocument.size(); ++j) {
+                String[] a_sentenceSplit = sentenceSplittedDocument.get(j);
+                for (int k = 0; k < a_sentenceSplit.length; ++k) {
+                    int indexInConceptStrings = resultConceptStrings.indexOf(a_sentenceSplit[k]);
+                    if (indexInConceptStrings!=-1)
+                        documentTransaction.set(indexInConceptStrings, Boolean.TRUE);
                 }
             }
             resultDocumentTransactions.add(documentTransaction);
         }
+     
         documentTransactionsAIM = resultDocumentTransactions;
-        
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total elapsed time in execution of method callMethod() is :"+ (endTime-startTime));
+
     }
     
 
