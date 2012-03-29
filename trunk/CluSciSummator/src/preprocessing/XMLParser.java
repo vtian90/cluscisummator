@@ -11,50 +11,19 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import utility.Global;
 
 /**
  *
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class XMLParser {
-
+    //Field Dokumen hasil parsing
     private Document _parsedDocument;
-    private String[] _rhetoricalStatusList = {
-        "aim", "nov_adv", "co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
-    };
 
-    enum listTag {
-
-        TAG_PAPER("paper"),
-        TAG_TITLE("title"),
-        TAG_AUTHOR("author"),
-        TAG_AIM("aim"),
-        TAG_NOV_ADV("nov_adv"),
-        TAG_CO_GRO("co_gro"),
-        TAG_OTHR("othr"),
-        TAG_PREV_OWN("prev_own"),
-        TAG_OWN_MTHD("own_mthd"),
-        TAG_OWN_FAIL("own_fail"),
-        TAG_OWN_RES("own_res"),
-        TAG_OWN_CONC("own_conc"),
-        TAG_CODI("codi"),
-        TAG_GAP_WEAK("gap_weak"),
-        TAG_ANTISUPP("antisupp"),
-        TAG_SUPPORT("support"),
-        TAG_USE("use"),
-        TAG_FUT("fut");
-        private String _tagName;
-
-        private listTag(String input) {
-            this._tagName = input;
-        }
-
-        @Override
-        public String toString() {
-            return _tagName;
-        }
-    }
-
+    /*
+     * Konstruktor
+     */
     public XMLParser() {
         _parsedDocument = new Document();
     }
@@ -74,7 +43,25 @@ public class XMLParser {
 
                 StringBuffer textBuffer = new StringBuffer();
                 ArrayList<String> authors = new ArrayList<String>();
-
+                
+                ArrayList<ArrayList<String>> contentContainer = new ArrayList<ArrayList<String>>();
+                
+                ArrayList<String> AIM = new ArrayList<String>();
+                ArrayList<String> NOV_ADV = new ArrayList<String>();
+                ArrayList<String> CO_GRO = new ArrayList<String>();
+                ArrayList<String> OTHR = new ArrayList<String>();
+                ArrayList<String> PREV_OWN = new ArrayList<String>();
+                ArrayList<String> OWN_MTHD = new ArrayList<String>();
+                ArrayList<String> OWN_FAIL = new ArrayList<String>();
+                ArrayList<String> OWN_RES = new ArrayList<String>();
+                ArrayList<String> OWN_CONC = new ArrayList<String>();
+                ArrayList<String> CODI = new ArrayList<String>();
+                ArrayList<String> GAP_WEAK = new ArrayList<String>();
+                ArrayList<String> ANTISUPP = new ArrayList<String>();
+                ArrayList<String> SUPPORT = new ArrayList<String>();
+                ArrayList<String> USE = new ArrayList<String>();
+                ArrayList<String> FUT = new ArrayList<String>();
+                
                 @Override
                 public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
                     textBuffer.setLength(0);
@@ -82,48 +69,73 @@ public class XMLParser {
 
                 @Override
                 public void endElement(String uri, String localName, String qName) throws SAXException {
-                    if (qName.equalsIgnoreCase(listTag.TAG_TITLE.toString())) {
+                    if (qName.equalsIgnoreCase(Global.listTag.TAG_TITLE.toString())) {
                         String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
                         _parsedDocument.setTitle(temp);
-                    } else if (qName.equalsIgnoreCase(listTag.TAG_AUTHOR.toString())) {
+                    } else if (qName.equalsIgnoreCase(Global.listTag.TAG_AUTHOR.toString())) {
                         authors.add(textBuffer.toString().trim());
-                    } else if (qName.equalsIgnoreCase(listTag.TAG_PAPER.toString())) {
+                    } else if (qName.equalsIgnoreCase(Global.listTag.TAG_PAPER.toString())) {
                         _parsedDocument.setAuthors(authors);
+                        for (String rhetoricStatus : Global.rhetoricalStatusList) {
+                            _parsedDocument.content.put(rhetoricStatus, AIM);
+                        }
+                        _parsedDocument.content.put(Global.listTag.TAG_AIM.toString(), AIM);
+                        _parsedDocument.content.put(Global.listTag.TAG_ANTISUPP.toString(), ANTISUPP);
+                        _parsedDocument.content.put(Global.listTag.TAG_CODI.toString(), CODI);
+                        _parsedDocument.content.put(Global.listTag.TAG_CO_GRO.toString(), CO_GRO);
+                        _parsedDocument.content.put(Global.listTag.TAG_FUT.toString(), FUT);
+                        _parsedDocument.content.put(Global.listTag.TAG_GAP_WEAK.toString(), GAP_WEAK);
+                        _parsedDocument.content.put(Global.listTag.TAG_NOV_ADV.toString(), NOV_ADV);
+                        _parsedDocument.content.put(Global.listTag.TAG_OTHR.toString(), OTHR);
+                        _parsedDocument.content.put(Global.listTag.TAG_OWN_CONC.toString(), OWN_CONC);
+                        _parsedDocument.content.put(Global.listTag.TAG_OWN_FAIL.toString(), OWN_FAIL);
+                        _parsedDocument.content.put(Global.listTag.TAG_OWN_MTHD.toString(), OWN_MTHD);
+                        _parsedDocument.content.put(Global.listTag.TAG_OWN_RES.toString(), OWN_RES);
+                        _parsedDocument.content.put(Global.listTag.TAG_PREV_OWN.toString(), PREV_OWN);
+                        _parsedDocument.content.put(Global.listTag.TAG_SUPPORT.toString(), SUPPORT);
+                        _parsedDocument.content.put(Global.listTag.TAG_USE.toString(), USE);
                     } else {
                         String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
                         
-                        if (qName.equalsIgnoreCase(listTag.TAG_AIM.toString())) {
-                            _parsedDocument.AIM.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_ANTISUPP.toString())) {
-                            _parsedDocument.ANTISUPP.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_CODI.toString())) {
-                            _parsedDocument.CODI.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_CO_GRO.toString())) {
-                            _parsedDocument.CO_GRO.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_FUT.toString())) {
-                            _parsedDocument.FUT.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_GAP_WEAK.toString())) {
-                            _parsedDocument.GAP_WEAK.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_NOV_ADV.toString())) {
-                            _parsedDocument.NOV_ADV.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_OTHR.toString())) {
-                            _parsedDocument.OTHR.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_OWN_CONC.toString())) {
-                            _parsedDocument.OWN_CONC.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_OWN_FAIL.toString())) {
-                            _parsedDocument.OWN_FAIL.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_OWN_MTHD.toString())) {
-                            _parsedDocument.OWN_MTHD.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_OWN_RES.toString())) {
-                            _parsedDocument.OWN_RES.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_PREV_OWN.toString())) {
-                            _parsedDocument.PREV_OWN.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_SUPPORT.toString())) {
-                            _parsedDocument.SUPPORT.add(temp);
-                        } else if (qName.equalsIgnoreCase(listTag.TAG_USE.toString())) {
-                            _parsedDocument.USE.add(temp);
+                        int indexRhetoric = Global.rhetoricalStatusList.indexOf(qName.toLowerCase());
+                        if (indexRhetoric != -1) {
+                            
+                        }
+                        
+                        if (qName.equalsIgnoreCase(Global.listTag.TAG_AIM.toString())) {
+                            ArrayList<String> temp = contentContainer.get(index);
+                            contentContainer.add(0, AIM.add(temp));
+                            AIM.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_ANTISUPP.toString())) {
+                            ANTISUPP.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_CODI.toString())) {
+                            CODI.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_CO_GRO.toString())) {
+                            CO_GRO.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_FUT.toString())) {
+                            FUT.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_GAP_WEAK.toString())) {
+                            GAP_WEAK.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_NOV_ADV.toString())) {
+                            NOV_ADV.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_OTHR.toString())) {
+                            OTHR.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_OWN_CONC.toString())) {
+                            OWN_CONC.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_OWN_FAIL.toString())) {
+                            OWN_FAIL.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_OWN_MTHD.toString())) {
+                            OWN_MTHD.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_OWN_RES.toString())) {
+                            OWN_RES.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_PREV_OWN.toString())) {
+                            PREV_OWN.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_SUPPORT.toString())) {
+                            SUPPORT.add(temp);
+                        } else if (qName.equalsIgnoreCase(Global.listTag.TAG_USE.toString())) {
+                            USE.add(temp);
                         }
                     }
                 }
@@ -138,6 +150,9 @@ public class XMLParser {
         }
     }
 
+    /*
+     * Public access dari dokumen hasil parsing
+     */
     public Document getParsedDocument() {
         return _parsedDocument;
     }

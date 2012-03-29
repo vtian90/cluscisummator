@@ -133,28 +133,78 @@ public class FTC {
             tabelFj.put(thisDocIndex, numberOfClusterInThisDoc);
         }
 
-        //Coba print TabelFj:
-        System.out.println("-----TABEL FJ------------");
-        Enumeration clusterDescription = tabelFj.keys();
-        while (clusterDescription.hasMoreElements()) {
-            Integer docIndex = (Integer) clusterDescription.nextElement();
-            System.out.println("jumlah cluster yang dikandung makalah yang-" + docIndex + ": "
-                    + tabelFj.get(docIndex));
-        }
-
-
+        System.out.println("--------EO DARI TIAP CLUSTER------------");
         while (coverSelectedTermSets.size() != numCoverageAll) {
+            //Coba print TabelFj:
+            System.out.println("-----TABEL FJ------------");
+            Enumeration clusterDescription = tabelFj.keys();
+            while (clusterDescription.hasMoreElements()) {
+                Integer docIndex = (Integer) clusterDescription.nextElement();
+                System.out.println("jumlah cluster yang dikandung makalah yang-" + docIndex + ": "
+                        + tabelFj.get(docIndex));
+            }
+
             //Hitung EO dari tiap termset dari candidateCluster:
+            //Ambil EO terkecil dengan |clusterKey| paling panjang
             Enumeration thisClusterKeys = candidateCluster.keys();
+
+            float minimumEO = 999;
+            ArrayList<String> clusterKeySelected = new ArrayList<String>();
+            ArrayList<Integer> clusterDocumentsSelected = new ArrayList<Integer>();
+
             while (thisClusterKeys.hasMoreElements()) {
                 ArrayList<String> thisClusterKey = (ArrayList<String>) thisClusterKeys.nextElement();
-                System.out.println("Cluster Description: "+thisClusterKey);
                 ArrayList<Integer> thisClusterDocIndexes = candidateCluster.get(thisClusterKey);
-                System.out.println("Indeks dokumennya "+thisClusterDocIndexes);
                 float EOThisCluster = EO(tabelFj, thisClusterDocIndexes);
-                System.out.println("EO dari cluster "+thisClusterKey+" = "+EOThisCluster);
+                if (EOThisCluster <= minimumEO && clusterKeySelected.size() <= thisClusterKey.size()) {
+                    minimumEO = EOThisCluster;
+                    clusterKeySelected = thisClusterKey;
+                    clusterDocumentsSelected = thisClusterDocIndexes;
+                }
+                System.out.println("" + thisClusterKey + " : " + thisClusterDocIndexes + " = " + EOThisCluster);
             }
-            break;
+
+            //Print Cluster terpilih;
+            System.out.println("CLUSTER TERPILIH:" + clusterKeySelected + " : " + clusterDocumentsSelected + " = " + minimumEO);
+
+            //Masukkin ke selectedCluster:
+            selectedCluster.put(clusterKeySelected, clusterDocumentsSelected);
+
+            //Tambahin clusterDocumentSelected ke coverSelectedTermSet
+            //Update tabelFJ juga sesuai coverSelectedTermSet
+            for (int i = 0; i < clusterDocumentsSelected.size(); ++i) {
+                if (!coverSelectedTermSets.contains(clusterDocumentsSelected.get(i))) {
+                    coverSelectedTermSets.add(clusterDocumentsSelected.get(i));
+                }
+
+                Integer numDocumentNew = tabelFj.get(clusterDocumentsSelected.get(i)) - 1;
+                tabelFj.put(clusterDocumentsSelected.get(i), numDocumentNew);
+            }
+
+
+
+            //Kurangin selectedCluster dari candidateCLuster:
+            candidateCluster.remove(clusterKeySelected);
+
+            //Buang semua dokumen di cov(bestCandidate) dari coverage semua cluster sisa
+            Enumeration candidateClusterKeys = candidateCluster.keys();
+            while (candidateClusterKeys.hasMoreElements()) {
+                ArrayList<String> thisclusterDescription = (ArrayList<String>) candidateClusterKeys.nextElement();
+                ArrayList<Integer> clusterDocuments = candidateCluster.get(thisclusterDescription);
+                ArrayList<Integer> newClusterDocuments = new ArrayList<Integer>();
+                for (int i = 0; i < clusterDocuments.size(); ++i) {
+                    if (!coverSelectedTermSets.contains(clusterDocuments.get(i))) {
+                        newClusterDocuments.add(clusterDocuments.get(i));
+                    }
+                }
+                if (newClusterDocuments.size() == 0) { //artinya udah tercover sama yang kepilih {
+                    candidateCluster.remove(thisclusterDescription);
+                } else {
+                    candidateCluster.put(thisclusterDescription, newClusterDocuments);
+                }
+            }
+
+            //break;
         }
 
         return selectedCluster;
@@ -166,8 +216,8 @@ public class FTC {
         for (int i = 0; i < docs.size(); ++i) {
             Integer thisDoc = docs.get(i);
             Integer fjThisDoc = tabelFj.get(thisDoc);
-            float temp = (1/(float)fjThisDoc);
-            float EOThisDoc = (float) ((-temp)*Math.log(temp));
+            float temp = (1 / (float) fjThisDoc);
+            float EOThisDoc = (float) ((-temp) * Math.log(temp));
             result += EOThisDoc;
         }
 

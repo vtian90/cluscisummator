@@ -21,11 +21,12 @@ import preprocessing.DocumentCollectionReader;
 public class CluSciSummator {
 
     /**
-     * @param args the command line argumentsd
+     * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
         String[] _rhetoricalStatusList = {
-            "aim"//, "nov_adv", "co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
+            "aim", "nov_adv", "co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
+            //"nov_adv", //"co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
         };
 
         String URI1 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
@@ -43,92 +44,100 @@ public class CluSciSummator {
 
         DocumentCollection collectionPaper = corpusReader.getParsedDocumentCollection();
 
+        collectionPaper.transactDocuments();
 
-        //Print AIM dari semua dokumen
-        System.out.println("AIM:");
-        ArrayList<Document> docs = collectionPaper.getDocumentCollection();
-        for (Document doc : docs) {
-            System.out.println("From Paper '" + doc.getTitle() + "':");
-            for (int i = 0; i < doc.AIM.size(); ++i) {
-                System.out.println(doc.AIM.get(i));
+        for (String rhetStatus : _rhetoricalStatusList) {
+            //Print semua kalimat dengan kategoriretorik = rhetStatus dari semua dokumen
+            System.out.println("------------------------------------START OF THIS RHETORIC-----------------------------------------");
+            System.out.println("----------------------------------------" + rhetStatus.toUpperCase() + "---------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------");
+            ArrayList<Document> docs = collectionPaper.getDocumentCollection();
+            for (Document doc : docs) {
+                System.out.println("From Paper '" + doc.getTitle() + "':");
+                for (int i = 0; i < doc.content.get(rhetStatus).size(); ++i) {
+                    System.out.println(doc.content.get(rhetStatus).get(i));
+                }
+                System.out.println("");
             }
             System.out.println("");
-        }
-        System.out.println("");
 
-        collectionPaper.transactDocumentAIM();
-        System.out.println("ALL CONCEPTS: ");
-        for (String rhetStatus : _rhetoricalStatusList) {
-            ArrayList<String> allConcepts = collectionPaper.conceptStringsAIM;
+            System.out.println("ALL CONCEPTS: ");
+            ArrayList<String> allConcepts = collectionPaper.conceptStrings.get(rhetStatus);
+            System.out.println("Concepts dari " + rhetStatus + " : " + allConcepts);
+            System.out.println("Jumlah Concepts dari " + rhetStatus + " : " + allConcepts.size());
             for (int i = 0; i < allConcepts.size(); ++i) {
                 System.out.print(allConcepts.get(i) + "|");
             }
-        }
-        System.out.println("");
-        for (String rhetStatus : _rhetoricalStatusList) {
-            ArrayList<String> allConcepts = collectionPaper.conceptStringsAIM;
+            System.out.println("");
+            System.out.println("");
+            
+            System.out.println("WEKA FORMAT:");
             for (int i = 0; i < allConcepts.size(); ++i) {
                 System.out.println("@attribute " + allConcepts.get(i) + " {P}");
             }
-        }
-
-        ArrayList<Integer> spaces = new ArrayList<Integer>();
-        System.out.println("\n");
-        for (String rhetStatus : _rhetoricalStatusList) {
-            ArrayList<String> allConcepts = collectionPaper.conceptStringsAIM;
+            
+            ArrayList<Integer> spaces = new ArrayList<Integer>();
+            System.out.println("\n");
             for (int i = 0; i < allConcepts.size(); ++i) {
                 System.out.print(allConcepts.get(i) + "|");
                 spaces.add(allConcepts.get(i).length() - 1);
             }
-        }
-        System.out.println("");
-        for (int i = 0; i < collectionPaper.documentTransactionsAIM.size(); ++i) {
-            ArrayList<Boolean> thisTrans = collectionPaper.documentTransactionsAIM.get(i);
-            for (int j = 0; j < thisTrans.size(); ++j) {
-                if (thisTrans.get(j)) {
-                    for (int k = 0; k < spaces.get(j); k++) {
-                        System.out.print(" ");
+
+            System.out.println("");
+            for (int i = 0; i < collectionPaper.documentTransactions.get(rhetStatus).size(); ++i) {
+                ArrayList<Boolean> thisTrans = collectionPaper.documentTransactions.get(rhetStatus).get(i);
+                for (int j = 0; j < thisTrans.size(); ++j) {
+                    if (thisTrans.get(j)) {
+                        for (int k = 0; k < spaces.get(j); k++) {
+                            System.out.print(" ");
+                        }
+                        System.out.print("P|");
+                    } else {
+                        for (int k = 0; k < spaces.get(j); k++) {
+                            System.out.print(" ");
+                        }
+                        System.out.print("?|");
                     }
-                    System.out.print("P|");
-                } else {
-                    for (int k = 0; k < spaces.get(j); k++) {
-                        System.out.print(" ");
-                    }
-                    System.out.print("?|");
+                }
+                System.out.println("");
+            }
+
+
+            double minimumSupport = 0.7;
+            int minimumDocumentSupport = (int) Math.round(minimumSupport * collectionPaper.documentTransactions.get(rhetStatus).size());
+            if (minimumDocumentSupport < 2) {
+                System.out.println("Itemset harus ada di >= 2 dokumen! Naikkan minimum support");
+            } else {
+                FTC frequentSearcher = new FTC(collectionPaper.conceptStrings.get(rhetStatus), collectionPaper.documentTransactions.get(rhetStatus), minimumSupport);
+                ArrayList<ArrayList<String>> result = frequentSearcher.searchFrequentTermSet();
+
+                for (int i = 0; i < result.size(); ++i) {
+                    ArrayList<String> frequentItemSet = result.get(i);
+                    System.out.println("" + frequentItemSet);
+                }
+                System.out.println("BATAS");
+                Hashtable<ArrayList<String>, ArrayList<Integer>> ht = frequentSearcher.clusterFrequentTermSet();
+                Enumeration keys = ht.keys();
+                while (keys.hasMoreElements()) {
+                    ArrayList<String> frequentTermSet = (ArrayList<String>) keys.nextElement();
+                    System.out.println(frequentTermSet + ": "
+                            + ht.get(frequentTermSet));
+                }
+                System.out.println("BATAS 2");
+                Hashtable<ArrayList<String>, ArrayList<Integer>> ht2 = frequentSearcher.filterCluster();
+                System.out.println("-------HASIL FILTERING----------");
+                Enumeration keys2 = ht2.keys();
+                while (keys2.hasMoreElements()) {
+                    ArrayList<String> frequentTermSet = (ArrayList<String>) keys2.nextElement();
+                    System.out.println(frequentTermSet + ": "
+                            + ht.get(frequentTermSet));
                 }
             }
+            System.out.println("------------------------------------END OF THIS RHETORIC-------------------------------------");
+            System.out.println("----------------------------------------------------------------------");
             System.out.println("");
         }
 
-        double minimumSupport = 0.5;
-        int minimumDocumentSupport = (int) Math.round(minimumSupport * collectionPaper.documentTransactionsAIM.size());
-        if (minimumDocumentSupport < 2) {
-            System.out.println("Itemset harus ada di >= 2 dokumen! Naikkan minimum support");
-        } else {
-            FTC frequentSearcher = new FTC(collectionPaper.conceptStringsAIM, collectionPaper.documentTransactionsAIM, minimumSupport);
-            ArrayList<ArrayList<String>> result = frequentSearcher.searchFrequentTermSet();
-
-            for (int i = 0; i < result.size(); ++i) {
-                ArrayList<String> frequentItemSet = result.get(i);
-                System.out.println("" + frequentItemSet);
-            }
-            System.out.println("BATAS");
-            Hashtable<ArrayList<String>, ArrayList<Integer>> ht = frequentSearcher.clusterFrequentTermSet();
-            Enumeration keys = ht.keys();
-            while (keys.hasMoreElements()) {
-                ArrayList<String> frequentTermSet = (ArrayList<String>) keys.nextElement();
-                System.out.println(frequentTermSet + ": "
-                        + ht.get(frequentTermSet));
-            }
-            System.out.println("BATAS 2");
-            Hashtable<ArrayList<String>, ArrayList<Integer>> ht2 = frequentSearcher.filterCluster();
-            Enumeration keys2 = ht2.keys();
-            while (keys2.hasMoreElements()) {
-                ArrayList<String> frequentTermSet = (ArrayList<String>) keys2.nextElement();
-                System.out.println(frequentTermSet + ": "
-                        + ht.get(frequentTermSet));
-            }
-        }
 
         /* System.out.println("----------------------");
         System.out.println("BUAT CONFIG SI URIGENA:");
