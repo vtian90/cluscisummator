@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import preprocessing.DocumentCollectionReader;
+import utility.Global;
 
 /**
  *
@@ -24,20 +25,20 @@ public class CluSciSummator {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
-        String[] _rhetoricalStatusList = {
-            "aim", "nov_adv", "co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
-            //"nov_adv", //"co_gro", "othr", "prev_own", "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak", "antisupp", "support", "use", "fut"
-        };
+        for (String s : Global.rhetoricalStatusList) {
+            System.out.println(""+s);
+        }
+        
 
         String URI1 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
         String URI2 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1049_FINAL_1.xml";
         String URI3 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\C02-1144_FINAL_2.xml";
-        String URI4 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1053(1).xml";
+        //String URI4 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1053(1).xml";
         ArrayList<String> URIS = new ArrayList<String>();
         URIS.add(URI1);
         URIS.add(URI2);
         URIS.add(URI3);
-        URIS.add(URI4);
+        //URIS.add(URI4);
 
         DocumentCollectionReader corpusReader = new DocumentCollectionReader();
         corpusReader.parseDocumentCollection(URIS);
@@ -46,7 +47,7 @@ public class CluSciSummator {
 
         collectionPaper.transactDocuments();
 
-        for (String rhetStatus : _rhetoricalStatusList) {
+        for (String rhetStatus : Global.rhetoricalStatusList) {
             //Print semua kalimat dengan kategoriretorik = rhetStatus dari semua dokumen
             System.out.println("------------------------------------START OF THIS RHETORIC-----------------------------------------");
             System.out.println("----------------------------------------" + rhetStatus.toUpperCase() + "---------------------------------------");
@@ -137,7 +138,6 @@ public class CluSciSummator {
             System.out.println("----------------------------------------------------------------------");
             System.out.println("");
         }
-
 
         /* System.out.println("----------------------");
         System.out.println("BUAT CONFIG SI URIGENA:");
