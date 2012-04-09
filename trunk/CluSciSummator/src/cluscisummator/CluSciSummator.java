@@ -5,14 +5,18 @@
 package cluscisummator;
 
 import clustering.FTC;
-import data.DocumentCollection;
-import data.Document;
+import java.awt.Point;
+import model.DocumentCollection;
+import model.Document;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import preprocessing.DocumentCollectionReader;
+import summarization.SentenceSelector;
 import utility.Global;
 
 /**
@@ -25,10 +29,6 @@ public class CluSciSummator {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
-        for (String s : Global.rhetoricalStatusList) {
-            System.out.println(""+s);
-        }
-        
 
         String URI1 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
         String URI2 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1049_FINAL_1.xml";
@@ -45,7 +45,7 @@ public class CluSciSummator {
 
         DocumentCollection collectionPaper = corpusReader.getParsedDocumentCollection();
 
-        collectionPaper.transactDocuments();
+        collectionPaper.processDocuments();
 
         for (String rhetStatus : Global.rhetoricalStatusList) {
             //Print semua kalimat dengan kategoriretorik = rhetStatus dari semua dokumen
@@ -71,12 +71,12 @@ public class CluSciSummator {
             }
             System.out.println("");
             System.out.println("");
-            
-            System.out.println("WEKA FORMAT:");
+
+            /* System.out.println("WEKA FORMAT:");
             for (int i = 0; i < allConcepts.size(); ++i) {
-                System.out.println("@attribute " + allConcepts.get(i) + " {P}");
-            }
-            
+            System.out.println("@attribute " + allConcepts.get(i) + " {P}");
+            } */
+
             ArrayList<Integer> spaces = new ArrayList<Integer>();
             System.out.println("\n");
             for (int i = 0; i < allConcepts.size(); ++i) {
@@ -109,35 +109,55 @@ public class CluSciSummator {
             if (minimumDocumentSupport < 2) {
                 System.out.println("Itemset harus ada di >= 2 dokumen! Naikkan minimum support");
             } else {
-                FTC frequentSearcher = new FTC(collectionPaper.conceptStrings.get(rhetStatus), collectionPaper.documentTransactions.get(rhetStatus), minimumSupport);
-                ArrayList<ArrayList<String>> result = frequentSearcher.searchFrequentTermSet();
+                FTC ftc = new FTC(collectionPaper.conceptStrings.get(rhetStatus), collectionPaper.documentTransactions.get(rhetStatus), minimumSupport);
+                ftc.filterCluster();
 
-                for (int i = 0; i < result.size(); ++i) {
-                    ArrayList<String> frequentItemSet = result.get(i);
-                    System.out.println("" + frequentItemSet);
-                }
-                System.out.println("BATAS");
-                Hashtable<ArrayList<String>, ArrayList<Integer>> ht = frequentSearcher.clusterFrequentTermSet();
-                Enumeration keys = ht.keys();
-                while (keys.hasMoreElements()) {
-                    ArrayList<String> frequentTermSet = (ArrayList<String>) keys.nextElement();
-                    System.out.println(frequentTermSet + ": "
-                            + ht.get(frequentTermSet));
-                }
-                System.out.println("BATAS 2");
-                Hashtable<ArrayList<String>, ArrayList<Integer>> ht2 = frequentSearcher.filterCluster();
-                System.out.println("-------HASIL FILTERING----------");
-                Enumeration keys2 = ht2.keys();
-                while (keys2.hasMoreElements()) {
+                System.out.println("\n-------HASIL FILTERING----------");
+                Enumeration keys2 = ftc.finalCluster.keys();
+                /* while (keys2.hasMoreElements()) {
                     ArrayList<String> frequentTermSet = (ArrayList<String>) keys2.nextElement();
                     System.out.println(frequentTermSet + ": "
-                            + ht.get(frequentTermSet));
+                            + ftc.finalCluster.get(frequentTermSet));
+                } */
+                System.out.println("");
+                System.out.println("CLUSTER BELUM DISUMMARY:");
+                
+                while (keys2.hasMoreElements()) {
+                    ArrayList<String> frequentTermSet = (ArrayList<String>) keys2.nextElement();
+                    System.out.println(frequentTermSet + ": ");
+                    ArrayList<Integer> documentsIndex = ftc.finalCluster.get(frequentTermSet);
+                    for (int i = 0; i < documentsIndex.size(); ++i) {
+                        int docIndex = documentsIndex.get(i);
+                        System.out.println("docIndex: "+docIndex);
+                        System.out.println("From Paper '" + collectionPaper.getDocumentByID(docIndex).getTitle() + "':");
+                        for (int j = 0; j < collectionPaper.getDocumentByID(docIndex).content.get(rhetStatus).size(); ++j) {
+                            System.out.println(collectionPaper.getDocumentByID(docIndex).content.get(rhetStatus).get(j));
+                        }
+                        
+                        System.out.println("PROCESSED DOC: ");
+                        ArrayList<ArrayList<String>> tes = collectionPaper.processedDocuments.get(rhetStatus).get(docIndex);
+                        System.out.println(""+tes);
+                        System.out.println("");
+                    }
+                    
+                    SentenceSelector sum = new SentenceSelector(collectionPaper.processedDocuments.get(rhetStatus), documentsIndex, frequentTermSet);
+                    sum.summarize();
+                    System.out.println("HASIL SUMMARY: ");
+                    for (int i=0; i<sum.selectedSentence.size();++i) {
+                        Point thisSelectedSentencePoint = sum.selectedSentence.get(i);
+                        int docID = (int) thisSelectedSentencePoint.getX();
+                        int sentenceIndex = (int) thisSelectedSentencePoint.getY();
+                        String sentence = collectionPaper.getDocumentByID(docID).content.get(rhetStatus).get(sentenceIndex);
+                        System.out.println(""+sentence);
+                    }
+                    System.out.println("");
                 }
             }
-            System.out.println("------------------------------------END OF THIS RHETORIC-------------------------------------");
+            System.out.println("\n------------------------------------END OF THIS RHETORIC-------------------------------------");
             System.out.println("----------------------------------------------------------------------");
             System.out.println("");
         }
+        
 
         /* System.out.println("----------------------");
         System.out.println("BUAT CONFIG SI URIGENA:");

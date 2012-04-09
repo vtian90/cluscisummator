@@ -17,7 +17,6 @@ import weka.core.Instances;
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class FTC {
-
     private final double deltaValue = 0.05;
     private double lowerBoundMinSupportValue;
     private final double minMetricValue = 0.9;
@@ -26,6 +25,7 @@ public class FTC {
     ArrayList<String> listAttribute;
     ArrayList<ArrayList<Boolean>> transactions;
     ArrayList<Integer> documentsCover; //cover dari semua dokumen yang ada pada term set hasil Apriori
+    public Hashtable<ArrayList<String>, ArrayList<Integer>> finalCluster; //Hasil dari FTC: deskripsi cluster + dokumen cluster
 
     public FTC(ArrayList<String> listAttribute, ArrayList<ArrayList<Boolean>> transactions, double minimumSupport) {
         this.listAttribute = listAttribute;
@@ -111,8 +111,9 @@ public class FTC {
         return result;
     }
 
-    public Hashtable<ArrayList<String>, ArrayList<Integer>> filterCluster() throws Exception {
+    public void filterCluster() throws Exception {
         Hashtable<ArrayList<String>, ArrayList<Integer>> candidateCluster = clusterFrequentTermSet();
+        Hashtable<ArrayList<String>, ArrayList<Integer>> tempCluster = new Hashtable<ArrayList<String>, ArrayList<Integer>>(candidateCluster);
         Hashtable<ArrayList<String>, ArrayList<Integer>> selectedCluster = new Hashtable<ArrayList<String>, ArrayList<Integer>>();
         ArrayList<Integer> coverSelectedTermSets = new ArrayList<Integer>();
 
@@ -168,7 +169,8 @@ public class FTC {
             System.out.println("CLUSTER TERPILIH:" + clusterKeySelected + " : " + clusterDocumentsSelected + " = " + minimumEO);
 
             //Masukkin ke selectedCluster:
-            selectedCluster.put(clusterKeySelected, clusterDocumentsSelected);
+            //selectedCluster.put(clusterKeySelected, clusterDocumentsSelected);
+            selectedCluster.put(clusterKeySelected, tempCluster.get(clusterKeySelected));
 
             //Tambahin clusterDocumentSelected ke coverSelectedTermSet
             //Update tabelFJ juga sesuai coverSelectedTermSet
@@ -180,7 +182,6 @@ public class FTC {
                 Integer numDocumentNew = tabelFj.get(clusterDocumentsSelected.get(i)) - 1;
                 tabelFj.put(clusterDocumentsSelected.get(i), numDocumentNew);
             }
-
 
 
             //Kurangin selectedCluster dari candidateCLuster:
@@ -203,11 +204,9 @@ public class FTC {
                     candidateCluster.put(thisclusterDescription, newClusterDocuments);
                 }
             }
-
-            //break;
         }
 
-        return selectedCluster;
+        this.finalCluster =  selectedCluster;
     }
 
     //Ngitung EO dari satu cluster (teknisnya sih dari satu list dokumen)

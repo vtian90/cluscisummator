@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package data;
+package model;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,14 +16,15 @@ import utility.Global;
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class DocumentCollection {
-
     private ArrayList<Document> _documentCollection;
     public Hashtable<String, ArrayList<String>> conceptStrings;
     public Hashtable<String, ArrayList<ArrayList<Boolean>>> documentTransactions;
+    public Hashtable<String, ArrayList<ArrayList<ArrayList<String>>>> processedDocuments;
 
     public DocumentCollection() {
         conceptStrings = new Hashtable<String, ArrayList<String>>();
         documentTransactions = new Hashtable<String, ArrayList<ArrayList<Boolean>>>();
+        processedDocuments = new Hashtable<String, ArrayList<ArrayList<ArrayList<String>>>>();
     }
 
     public ArrayList<Document> getDocumentCollection() {
@@ -34,18 +35,21 @@ public class DocumentCollection {
         this._documentCollection = _documentCollection;
     }
 
-    public void transactDocuments() throws FileNotFoundException, IOException {
+    public void processDocuments() throws FileNotFoundException, IOException {
         long startTime = System.currentTimeMillis();
 
-        Hashtable<String, ArrayList<ArrayList<String[]>>> sentenceSplittedAllDocumentHT = new Hashtable<String, ArrayList<ArrayList<String[]>>>(); //sentenceSplittedAllDocument disimpen di HT dengan keynya yaitu tag rhetoric
+        //sentenceSplittedAllDocument disimpen di HT dengan keynya yaitu tag rhetoric
+        Hashtable<String, ArrayList<ArrayList<ArrayList<String>>>> sentenceSplittedAllDocumentHT = new Hashtable<String, ArrayList<ArrayList<ArrayList<String>>>> ();
 
         //Praproses dokumen:
         for (String tagRhetoric : Global.rhetoricalStatusList) {
-            ArrayList<ArrayList<String[]>> sentenceSplittedAllDocument = new ArrayList<ArrayList<String[]>>(); //ArrayList dari kalimat, satu kalimat udah displit jadi satu kata yang udah di praproses
+            //ArrayList dari kalimat semua dokumen, satu kalimat udah displit jadi satu kata yang udah di praproses
+            ArrayList<ArrayList<ArrayList<String>>> sentenceSplittedAllDocument = new ArrayList<ArrayList<ArrayList<String>>>();
+            
             for (int i = 0; i < _documentCollection.size(); ++i) {
                 Document doc = _documentCollection.get(i);
-
-                ArrayList<String[]> sentenceSplittedDocument = new ArrayList<String[]>();
+                //ArrayList dari kalimat dalam 1 dokumen, satu kalimat udah displit jadi satu kata yang udah di praproses
+                ArrayList<ArrayList<String>> sentenceSplittedDocument = new ArrayList<ArrayList<String>>();
 
                 ArrayList<String> sentencesByRhetoric = doc.content.get(tagRhetoric);
                 for (int j = 0; j < sentencesByRhetoric.size(); ++j) {
@@ -57,27 +61,36 @@ public class DocumentCollection {
                     a_sentence = a.removeStopword(a_sentence);
                     a_sentence = preprocessing.Stemmer.stem(a_sentence);
 
+                    //Split satu kalimat menjadi kata2:
                     String[] a_sentenceSplit = a_sentence.split(" ");
-                    sentenceSplittedDocument.add(a_sentenceSplit);
+                    //Ubah jadi ArrayList
+                    ArrayList<String> a_sentenceSplitArrayList = new ArrayList<String>();
+                    for (int k = 0;k < a_sentenceSplit.length; ++k) {
+                        if (a_sentenceSplit[k].length() != 0 &&a_sentenceSplit[k].length() > 3 && !a_sentenceSplit[k].matches("-?\\d+(.\\d+)?")){
+                            a_sentenceSplitArrayList.add(a_sentenceSplit[k]);
+                        }
+                    }
+                    
+                    sentenceSplittedDocument.add(a_sentenceSplitArrayList);
                 }
                 sentenceSplittedAllDocument.add(sentenceSplittedDocument);
             }
             sentenceSplittedAllDocumentHT.put(tagRhetoric, sentenceSplittedAllDocument);
         }
-
+        
+        this.processedDocuments = sentenceSplittedAllDocumentHT;
 
         //Bikin semua konsep dari hasil praproses dokumen:
         for (String tagRhetoric : Global.rhetoricalStatusList) {
             ArrayList<String> resultConceptStrings = new ArrayList<String>();
-            ArrayList<ArrayList<String[]>> thisSentenceSplittedAllDocument = sentenceSplittedAllDocumentHT.get(tagRhetoric);
+            ArrayList<ArrayList<ArrayList<String>>> thisSentenceSplittedAllDocument = sentenceSplittedAllDocumentHT.get(tagRhetoric);
             for (int i = 0; i < thisSentenceSplittedAllDocument.size(); ++i) {
-                ArrayList<String[]> sentenceSplittedDocument = thisSentenceSplittedAllDocument.get(i);
+                ArrayList<ArrayList<String>> sentenceSplittedDocument = thisSentenceSplittedAllDocument.get(i);
                 for (int j = 0; j < sentenceSplittedDocument.size(); ++j) {
-                    String[] a_sentenceSplit = sentenceSplittedDocument.get(j);
-                    for (int k = 0; k < a_sentenceSplit.length; ++k) {
-                        
-                        if (!resultConceptStrings.contains(a_sentenceSplit[k]) && a_sentenceSplit[k].length() != 0 &&a_sentenceSplit[k].length() > 3 && !a_sentenceSplit[k].matches("-?\\d+(.\\d+)?")){
-                            resultConceptStrings.add(a_sentenceSplit[k]);
+                    ArrayList<String> a_sentenceSplit = sentenceSplittedDocument.get(j);
+                    for (int k = 0; k < a_sentenceSplit.size(); ++k) {
+                        if (!resultConceptStrings.contains(a_sentenceSplit.get(k))){
+                            resultConceptStrings.add(a_sentenceSplit.get(k));
                         }
                     }
                 }
@@ -89,9 +102,9 @@ public class DocumentCollection {
         //Bikin transaksi dari semua dokumen untuk setiap kategori retorik:
         for (String tagRhetoric : Global.rhetoricalStatusList) {
             ArrayList<ArrayList<Boolean>> resultDocumentTransactions = new ArrayList<ArrayList<Boolean>>();
-            ArrayList<ArrayList<String[]>> thisSentenceSplittedAllDocument = sentenceSplittedAllDocumentHT.get(tagRhetoric);
+            ArrayList<ArrayList<ArrayList<String>>> thisSentenceSplittedAllDocument = sentenceSplittedAllDocumentHT.get(tagRhetoric);
             for (int i = 0; i < thisSentenceSplittedAllDocument.size(); ++i) {
-                ArrayList<String[]> sentenceSplittedDocument = thisSentenceSplittedAllDocument.get(i);
+                ArrayList<ArrayList<String>> sentenceSplittedDocument = thisSentenceSplittedAllDocument.get(i);
 
                 ArrayList<Boolean> documentTransaction = new ArrayList<Boolean>(this.conceptStrings.get(tagRhetoric).size());
                 for (int j = 0; j < this.conceptStrings.get(tagRhetoric).size(); ++j) {
@@ -99,9 +112,9 @@ public class DocumentCollection {
                 }
 
                 for (int j = 0; j < sentenceSplittedDocument.size(); ++j) {
-                    String[] a_sentenceSplit = sentenceSplittedDocument.get(j);
-                    for (int k = 0; k < a_sentenceSplit.length; ++k) {
-                        int indexInConceptStrings = this.conceptStrings.get(tagRhetoric).indexOf(a_sentenceSplit[k]);
+                    ArrayList<String> a_sentenceSplit = sentenceSplittedDocument.get(j);
+                    for (int k = 0; k < a_sentenceSplit.size(); ++k) {
+                        int indexInConceptStrings = this.conceptStrings.get(tagRhetoric).indexOf(a_sentenceSplit.get(k));
                         if (indexInConceptStrings != -1) {
                             documentTransaction.set(indexInConceptStrings, Boolean.TRUE);
                         }
@@ -114,7 +127,6 @@ public class DocumentCollection {
 
         long endTime = System.currentTimeMillis();
         System.out.println("Total elapsed time eksekusi Praproses semua dokumen is :" + (endTime - startTime));
-
     }
 
     /**

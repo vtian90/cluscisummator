@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clustering;
+package summarization;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -18,7 +18,7 @@ public class VectorSpaceModel {
     /*
      * Konstruktor
      * 
-     * Membentuk vectorSpaceModel dari sebuah kalimat
+     * Membentuk VectorSpaceModel dari sebuah kalimat
      * cth: 
      * input: a boy is crying out loud in a room a boy
      * output: hashmap dengan isi: 
