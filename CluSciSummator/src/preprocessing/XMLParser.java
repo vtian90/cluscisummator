@@ -4,7 +4,7 @@
  */
 package preprocessing;
 
-import data.Document;
+import model.Document;
 import java.util.ArrayList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

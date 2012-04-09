@@ -4,8 +4,8 @@
  */
 package preprocessing;
 
-import data.Document;
-import data.DocumentCollection;
+import model.Document;
+import model.DocumentCollection;
 import java.util.ArrayList;
 
 /**
@@ -29,7 +29,7 @@ public class DocumentCollectionReader {
      * @param URIS 
      */
     public void parseDocumentCollection(ArrayList<String> URIS){
-        int docID = 1;
+        int docID = 0;
         ArrayList<Document> documents = new ArrayList<Document>();
         for (String URI : URIS) {
            XMLParser parser = new XMLParser();
