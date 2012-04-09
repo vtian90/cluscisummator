@@ -1,0 +1,7 @@
+1. Analisis minimum support
+2. Analisis topik dokumen tidak berhubungan (kasus 2^F tidak mungkin terjadi)
+3. Fasilitasi nilai minimum support dapat diproses
+
+JAWAB:
+1. Pada apriori, dibutuhkan itemset yang muncul lebih dari 1 dokumen.
+   Minimal minimum support = 2/x dokumen
