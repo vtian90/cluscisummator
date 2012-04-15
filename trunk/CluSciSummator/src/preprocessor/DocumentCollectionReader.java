@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package preprocessing;
+package preprocessor;
 
-import model.Document;
-import model.DocumentCollection;
+import datamodel.Document;
+import datamodel.DocumentCollection;
 import java.util.ArrayList;
 
 /**
@@ -13,12 +13,31 @@ import java.util.ArrayList;
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class DocumentCollectionReader {
+    /**
+     * FIELD DARI CLASS
+     * 1. _parsedDocumentCollection: koleksi dokumen yang telah di parse
+     */
     private DocumentCollection _parsedDocumentCollection;
         
+    
+    /**
+     * KONSTRUKTOR DARI CLASS
+     */
     public DocumentCollectionReader() {
         _parsedDocumentCollection = new DocumentCollection();
     }
 
+    
+    /*
+     * METHOD DARI CLASS
+     * 1. getParsedDocumentCollection() 
+     * 2. parseDocumentCollection(ArrayList<String> URIS)
+     */
+    
+    /**
+     * Method getParsedDocumentCollection : Akses _parsedDocumentCollection oleh kelas lain
+     * @return 
+     */
     public DocumentCollection getParsedDocumentCollection() {
         return _parsedDocumentCollection;
     }
@@ -41,6 +60,4 @@ public class DocumentCollectionReader {
        }
         _parsedDocumentCollection.setDocumentCollection(documents);
     }
-        
-        
 }
