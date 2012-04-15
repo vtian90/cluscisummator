@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package datamodel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
-import preprocessing.StopwordRemover;
+import preprocessor.StopwordRemover;
 import utility.Global;
 
 /**
@@ -59,7 +60,7 @@ public class DocumentCollection {
 
                     StopwordRemover a = new StopwordRemover();
                     a_sentence = a.removeStopword(a_sentence);
-                    a_sentence = preprocessing.Stemmer.stem(a_sentence);
+                    a_sentence = preprocessor.Stemmer.stem(a_sentence);
 
                     //Split satu kalimat menjadi kata2:
                     String[] a_sentenceSplit = a_sentence.split(" ");
@@ -82,19 +83,35 @@ public class DocumentCollection {
 
         //Bikin semua konsep dari hasil praproses dokumen:
         for (String tagRhetoric : Global.rhetoricalStatusList) {
-            ArrayList<String> resultConceptStrings = new ArrayList<String>();
+            Hashtable<String, Integer> resultConceptStringsHT = new Hashtable<String, Integer>();
             ArrayList<ArrayList<ArrayList<String>>> thisSentenceSplittedAllDocument = sentenceSplittedAllDocumentHT.get(tagRhetoric);
             for (int i = 0; i < thisSentenceSplittedAllDocument.size(); ++i) {
                 ArrayList<ArrayList<String>> sentenceSplittedDocument = thisSentenceSplittedAllDocument.get(i);
                 for (int j = 0; j < sentenceSplittedDocument.size(); ++j) {
                     ArrayList<String> a_sentenceSplit = sentenceSplittedDocument.get(j);
                     for (int k = 0; k < a_sentenceSplit.size(); ++k) {
-                        if (!resultConceptStrings.contains(a_sentenceSplit.get(k))){
-                            resultConceptStrings.add(a_sentenceSplit.get(k));
+                        if (!resultConceptStringsHT.containsKey(a_sentenceSplit.get(k))) {
+                            resultConceptStringsHT.put(a_sentenceSplit.get(k), 1);
+                        } else {
+                            Integer newFreq = resultConceptStringsHT.get(a_sentenceSplit.get(k))+ 1;
+                            resultConceptStringsHT.put(a_sentenceSplit.get(k), newFreq);
                         }
                     }
                 }
             }
+            
+            //Buang conceptString yang kemunculannya hanya 1 kali di semua dokumen
+            ArrayList<String> resultConceptStrings = new ArrayList<String>();
+            //Buang yang freq = 1;
+            Enumeration concepts = resultConceptStringsHT.keys();
+            while (concepts.hasMoreElements()) {
+                String a_concept = (String) concepts.nextElement();
+                Integer freqThisConcept = resultConceptStringsHT.get(a_concept);
+                if (freqThisConcept > 1) {
+                    resultConceptStrings.add(a_concept);
+                }
+            }
+            
             this.conceptStrings.put(tagRhetoric, resultConceptStrings);
         }
 

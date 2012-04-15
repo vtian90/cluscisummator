@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package preprocessing;
+package preprocessor;
 
-import model.Document;
+import datamodel.Document;
 import java.util.ArrayList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -18,22 +18,33 @@ import utility.Global;
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class XMLParser {
-    //Field Dokumen hasil parsing
+    /**
+     * FIED DARI CLASS
+     * 1. _parsedDocument: Field Dokumen hasil parsing
+     * 2. _contentContainer: 
+     */
     private Document _parsedDocument;
-
-    private ArrayList<ArrayList<String>> contentContainer = new ArrayList<ArrayList<String>>(15);
-    /*
-     * Konstruktor
+    private ArrayList<ArrayList<String>> _contentContainer = new ArrayList<ArrayList<String>>(15);
+    
+    
+    /**
+     * CONSTRUCTOR DARI CLASS
      */
     public XMLParser() {
         _parsedDocument = new Document();
         for (String tagRhetoric : Global.rhetoricalStatusList) {
             int indexRhetoric = Global.rhetoricalStatusList.indexOf(tagRhetoric);
             ArrayList<String> temp = new ArrayList<String>();
-            contentContainer.add(temp);
+            _contentContainer.add(indexRhetoric, temp);
         }
     }
 
+    /**
+     * METHOD DARI CLASS
+     * 1. parseDocument(String URI, int docID)
+     * 2. getParsedDocument()
+     */
+    
     /**
      * Method parseDocument : Melakukan parsing satu dokumen
      * @param URI
@@ -41,7 +52,6 @@ public class XMLParser {
      */
     public void parseDocument(String URI, int docID) {
         _parsedDocument.setID(docID);
-        
         
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -68,7 +78,7 @@ public class XMLParser {
                         _parsedDocument.setAuthors(authors);
                         for (String rhetoricStatus : Global.rhetoricalStatusList) {
                             int indexRhetoric = Global.rhetoricalStatusList.indexOf(rhetoricStatus);
-                            _parsedDocument.content.put(rhetoricStatus, contentContainer.get(indexRhetoric));
+                            _parsedDocument.content.put(rhetoricStatus, _contentContainer.get(indexRhetoric));
                         }
                     } else {
                         String temp = textBuffer.toString().trim();
@@ -76,10 +86,10 @@ public class XMLParser {
                         
                         int indexRhetoric = Global.rhetoricalStatusList.indexOf(qName.toLowerCase());
                         if (indexRhetoric != -1) {
-                            ArrayList<String> container = contentContainer.get(indexRhetoric);
+                            ArrayList<String> container = _contentContainer.get(indexRhetoric);
                             container.add(temp);
-                            contentContainer.remove(indexRhetoric);
-                            contentContainer.add(indexRhetoric, container);
+                            _contentContainer.remove(indexRhetoric);
+                            _contentContainer.add(indexRhetoric, container);
                         }
                     }
                 }
@@ -95,6 +105,8 @@ public class XMLParser {
     }
 
     /*
+     * Method getParsedDocument
+     * 
      * Public access dari dokumen hasil parsing
      */
     public Document getParsedDocument() {
