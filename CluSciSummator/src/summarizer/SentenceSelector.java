@@ -65,15 +65,20 @@ public class SentenceSelector {
         double averageSimilaritySentences = 0;
         int sizeR = this._R.size();
         int numberOfSentenceCombination = (sizeR) * (sizeR - 1) / 2;
+        System.out.println("NUMBER OF SENTENCE COMBINATION = "+numberOfSentenceCombination);
         double sumOfSentenceSimilarity = 0;
         for (int i = 0; i < sizeR - 1; ++i) {
             ArrayList<String> sentence1 = this._R.get(i);
             for (int j = i + i; j < sizeR; ++j) {
                 ArrayList<String> sentence2 = this._R.get(j);
                 double similaritySentence1to2 = sentenceSimilarity(sentence1, sentence2);
+                System.out.println("SEN1"+sentence1);
+                System.out.println("SEN2"+sentence2);
                 sumOfSentenceSimilarity += similaritySentence1to2;
+                System.out.println("SENTENCE SIMILARITY = "+similaritySentence1to2);
             }
         }
+        System.out.println("SUM OF SENTENCE SIMILARITY = "+sumOfSentenceSimilarity);
         averageSimilaritySentences = (double) sumOfSentenceSimilarity/numberOfSentenceCombination;
         System.out.println("average Sentence Similarity" + averageSimilaritySentences);
 
