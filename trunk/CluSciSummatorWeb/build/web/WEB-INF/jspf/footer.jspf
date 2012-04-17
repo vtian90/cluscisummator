@@ -1,0 +1,10 @@
+            </div> <!--END OF DIV CONTENT-->
+            <div class="footer" id="footer">
+                    <br/>
+                    Copyright &copy; <%= Calendar.getInstance().get(Calendar.YEAR) %>  Akbar Gumbira.<br/>
+                    All Rights Reserved.<br/>
+                    --<br/>
+            </div>
+        </div> <!--END OF DIV CONTAINER-->
+    </body>
+</html>

@@ -1,0 +1,170 @@
+/* 
+    Document   : style
+    Created on : 16 Apr 12, 15:08:30
+    Author     : Akbar Gumbira (akbargumbira@gmail.com)
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+body{
+    background-color: rgb(221, 221, 221);
+}
+
+#container {
+    width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.top_menu {
+    width: 1100px;
+    background-color: #FF9900;
+    margin-left: auto;
+    margin-right: auto;
+    -moz-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+
+    border-radius : 10px 10px 0px 0px;
+}
+
+.banner {
+    margin: 45px 0px 0px 20px;
+    padding: 5px 10px 5px 10px;
+    float: left;
+    font-family: Impact;
+    font-size: 28px;
+    color: #663D00;
+    border-radius : 10px 10px 0px 0px;
+    background-color: rgb(221, 221, 221);
+}
+.banner a {
+    text-decoration:none;
+    color: #663D00;
+}
+.navigation_bar {
+    height: 45px;
+    background-color: #FF9900;
+}
+.navigation {
+    padding: 0px 0px 0px 20px;
+    list-style:none;
+}
+
+.navigation li{
+    font-family: Impact;
+    font-size: 20px;
+    float:right;
+    position:relative;
+    padding: 57px 10px 0px 0px;
+}
+
+.navigation li a {
+    min-width: 2.5em;
+    text-decoration:none;
+    color: #663D00;
+    background-color: rgb(221, 221, 221);
+    padding:0.2em 0.35em 0.2em 0.35em;
+    margin-right: 1px;
+    border-right:1px solid white;
+    display: block;
+    text-align: center;
+    -moz-border-bottom-left-radius: 7px;
+    -moz-border-bottom-right-radius: 7px;
+    -webkit-border-bottom-left-radius: 7px;
+    -webkit-border-bottom-right-radius: 7px;
+    border-radius : 5px 5px 0px 0px;
+}
+
+.navigation li a:hover {
+    background-color: #663D00 ;
+    color : #FF9900;
+}
+
+.content{
+    background-color: rgb(221, 221, 221);
+    min-height: 380px;
+    margin: 10px 0px 10px 0px;
+}
+
+.input_summarize {
+    font-family: monospace;
+    margin: auto;
+    padding-top: 30px;
+    width: 50%;
+}
+
+.summarization_result {
+    font-family: monospace;
+}
+
+.one_column {
+    background-color: rgba(255,255,255,0.5);
+    min-height: 380px;
+    border-radius : 15px 15px 15px 15px;
+}
+
+.left_column {
+    background-color: rgba(255,255,255,0.5);
+    min-height: 100px;
+    float: left;
+    margin: 0px 10px 0px 0px;
+    width: 24%;
+    border-radius: 10px 10px 10px 10px;
+    padding: 10px;
+}
+
+.right_column {
+    min-height: 380px;
+    float: right;
+    display: inline;
+    margin: 0;
+    width: 73%;
+}
+
+.box {
+    padding: 10px;
+    background-color: rgba(255,255,255,0.5);
+    margin: 0px 0px 10px 0px;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.footer {
+    width: 1100px;
+    background-color: #FF9900;
+    margin: auto;
+    text-align: center;
+    font-size: 15px;
+    color: #663D00;
+    min-height: 50px;
+    -moz-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    
+    border-radius :10px 10px 0px 0px;
+}
+
+.font1 {
+    font-family: monospace;
+    color: #FF9900;
+    font-weight: bold;
+}
+
+.font2 {
+    font-family: sans-serif;
+    color: black;
+    font-weight: bold;
+}
+
+.clearboth {
+    clear: both;
+}

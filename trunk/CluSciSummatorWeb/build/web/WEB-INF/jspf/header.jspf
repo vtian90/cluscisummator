@@ -1,0 +1,25 @@
+<%@page import="java.util.Calendar"%>
+
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<html>
+     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <!--CSS-->
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/style.css" media="screen, projection" />
+          
+        <title>CluSciSummator</title>
+    </head>
+    <body>
+        <div class="container" id="container">
+            <div class="top_menu">
+                <div class="banner">
+                    <a href="<%=request.getContextPath()%>/main"> Cluster Summarizer </a>
+                </div>
+                <ul class="navigation">
+                        <li id ="about_navigation"><a href="<%=request.getContextPath()%>/about">ABOUT</a></li>
+                </ul>
+                <div class="clearboth"></div>
+            </div>
+                <div class="clearboth"></div>
+            <div class="content" id="content">

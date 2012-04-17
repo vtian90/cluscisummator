@@ -4,6 +4,8 @@
     Author     : Akbar Gumbira (akbargumbira@gmail.com)
 --%>
 
-<div class="about" id="about">
-    About
+<div class="one_column">
+    <div class="about" id="about">
+        About
+    </div>
 </div>
