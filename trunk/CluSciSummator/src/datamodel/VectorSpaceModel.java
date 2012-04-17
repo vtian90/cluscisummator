@@ -81,8 +81,9 @@ public class VectorSpaceModel {
 
             result += tfInSentence1 * tfInSentence2;
         }
-
-        result = result / (euclidSentence1 * euclidSentence2);
+        
+        if (euclidSentence1 != 0 && euclidSentence2 != 0) 
+            result = result / (euclidSentence1 * euclidSentence2);
         return result;
     }
     

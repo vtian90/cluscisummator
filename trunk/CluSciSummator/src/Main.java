@@ -41,7 +41,7 @@ public class Main {
         URIS.add(URI3);
 //        URIS.add(URI4);
 
-        CluSciSummator summarizer = new CluSciSummator(URIS, "aim", 0.7);
+        CluSciSummator summarizer = new CluSciSummator(URIS, "prev_own", 0.7);
         summarizer.summarize();
         
         Enumeration clusters = summarizer.summarization.keys();
