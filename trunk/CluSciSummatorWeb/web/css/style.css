@@ -94,7 +94,7 @@ body{
 .content{
     background-color: rgb(221, 221, 221);
     min-height: 380px;
-    margin: 10px 0px 10px 0px;
+    margin: 15px 0px 15px 0px;
 }
 
 .input_summarize {
@@ -163,6 +163,44 @@ body{
     font-family: sans-serif;
     color: black;
     font-weight: bold;
+}
+
+select{
+    font-family: georgia;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius : 5px 5px 5px 5px;
+    /* kalo gak dukung transparan */
+    border:2px solid rgb(120,120,120);
+    border:2px solid rgba(120,120,120, 0.7);    
+    margin : 5px 0px 5px 10px;
+    width: 130px;
+}
+
+input[type=text]{
+    font-family: georgia;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius : 5px 5px 5px 5px;
+    /* kalo gak dukung transparan */
+    border:2px solid rgb(120,120,120);
+    border:2px solid rgba(120,120,120, 0.7);
+    margin : 5px 0px 5px 10px;
+    width: 130px;
+}
+
+input[type=submit]{
+    font: georgia;
+    background-color: #FF9900;
+    color : white;
+    border : none;
+    cursor: pointer;
+    margin: 6px 3px 3px 0px;
+    font-weight: bold;
+    padding : 4px 10px 4px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius : 5px 5px 5px 5px;
 }
 
 .clearboth {
