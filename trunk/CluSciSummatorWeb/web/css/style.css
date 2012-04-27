@@ -20,13 +20,12 @@ body{
 }
 
 #container {
-    width: 1100px;
+    width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .top_menu {
-    width: 1100px;
     background-color: #FF9900;
     margin-left: auto;
     margin-right: auto;
@@ -100,23 +99,35 @@ body{
 .input_summarize {
     font-family: monospace;
     margin: auto;
-    padding-top: 30px;
-    width: 50%;
+    width: 47%;
 }
 
 .summarization_result {
     font-family: monospace;
 }
 
+.input_file {
+    font-family: monospace;
+    margin: auto;
+    width: 47%;
+}
+
+.uploaded_file {
+    font-family: monospace;
+    margin: auto;
+    width: 47%;
+}
+
 .one_column {
     background-color: rgba(255,255,255,0.5);
-    min-height: 380px;
-    border-radius : 15px 15px 15px 15px;
+    padding: 15px 15px 5px 15px;
+    margin: 10px 0px 10px 0px;
+    border-radius: 10px 10px 10px 10px;
 }
 
 .left_column {
-    background-color: rgba(255,255,255,0.5);
-    min-height: 100px;
+    background-color: rgba(255,255,255,0.4);
+    min-height: 207px;
     float: left;
     margin: 0px 10px 0px 0px;
     width: 24%;
@@ -125,22 +136,33 @@ body{
 }
 
 .right_column {
-    min-height: 380px;
+    background-color: rgba(255,255,255,0.4);
+    min-height: 207px;
     float: right;
+    margin: 0px 0px 0px 0px;
     display: inline;
-    margin: 0;
-    width: 73%;
+    border-radius: 10px 10px 10px 10px;
+    padding: 10px;
+    width: 71%;
 }
 
-.box {
-    padding: 10px;
-    background-color: rgba(255,255,255,0.5);
-    margin: 0px 0px 10px 0px;
+.transparent_box {
+    padding: 10px 10px 10px 10px;
+    background-color: rgba(200,200,200,0.5);
+    margin: 10px 0px 10px 0px;
     border-radius: 10px 10px 10px 10px;
 }
 
+.home {
+    min-height: 330px;
+}
+
+.about {
+    min-height: 330px;
+}
+
 .footer {
-    width: 1100px;
+    
     background-color: #FF9900;
     margin: auto;
     text-align: center;
@@ -149,7 +171,6 @@ body{
     min-height: 50px;
     -moz-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
     -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
-    
     border-radius :10px 10px 0px 0px;
 }
 
@@ -157,6 +178,12 @@ body{
     font-family: monospace;
     color: #FF9900;
     font-weight: bold;
+}
+
+.font1_bold {
+    font-family: monospace;
+    font-weight: bold;
+    color: #EC8D00;
 }
 
 .font2 {
@@ -203,6 +230,23 @@ input[type=submit]{
     border-radius : 5px 5px 5px 5px;
 }
 
+button {
+    font: georgia;
+    background-color: #FF9900;
+    color : white;
+    border : none;
+    cursor: pointer;
+    margin: 6px 3px 3px 0px;
+    font-weight: bold;
+    padding : 4px 10px 4px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius : 5px 5px 5px 5px;
+}
+
+#loading{
+    margin: 0px 0px 0px 6px;
+}
 .clearboth {
     clear: both;
 }
