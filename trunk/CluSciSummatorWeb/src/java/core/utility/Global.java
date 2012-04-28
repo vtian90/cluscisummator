@@ -7,6 +7,7 @@ package core.utility;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,7 +17,9 @@ import java.util.List;
 public class Global {
 
     public static enum listTag {
-
+        /**
+         * LIST TAG XML input
+         */
         TAG_PAPER("paper"),
         TAG_TITLE("title"),
         TAG_AUTHOR("author"),
@@ -46,8 +49,13 @@ public class Global {
             return _tagName;
         }
     }
+    
+    /*
+     * List tag Rhetoric
+     */
     public final static List<String> rhetoricalStatusList = Arrays.asList(
-            "aim", "nov_adv", "co_gro", "othr", "prev_own",
-            "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak",
-            "antisupp", "support", "use", "fut");
+        "aim","nov_adv", "co_gro", "othr", "prev_own",
+        "own_mthd", "own_fail", "own_res", "own_conc", "codi", "gap_weak",
+        "antisupp", "support", "use", "fut"
+    );      
 }

@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.preprocessor;
+package core.preprocessing;
 
-import core.datamodel.Document;
 import java.util.ArrayList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -71,6 +70,7 @@ public class XMLParser {
                     if (qName.equalsIgnoreCase(Global.listTag.TAG_TITLE.toString())) {
                         String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
+                        temp = temp.replaceAll("- ", "");
                         _parsedDocument.setTitle(temp);
                     } else if (qName.equalsIgnoreCase(Global.listTag.TAG_AUTHOR.toString())) {
                         authors.add(textBuffer.toString().trim());
@@ -83,6 +83,7 @@ public class XMLParser {
                     } else {
                         String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
+                        temp = temp.replaceAll("- ", ""); //Buang kesalahan tanda sambung yang banyak di paper. Cth: cluster- ing
                         
                         int indexRhetoric = Global.rhetoricalStatusList.indexOf(qName.toLowerCase());
                         if (indexRhetoric != -1) {
@@ -99,8 +100,10 @@ public class XMLParser {
                     textBuffer.append(ch, start, length);
                 }
             };
-            saxParser.parse(URI, handler);
+            saxParser.parse("file:///"+URI, handler);
         } catch (Exception e) {
+            System.out.println("Error: "+e.toString());
+            System.out.println("URI: "+URI);
         }
     }
 
