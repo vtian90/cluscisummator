@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package preprocessor;
+package preprocessing;
 /*
 
    Porter stemmer in Java. The original paper is in

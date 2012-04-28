@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package datamodel;
+package sentenceselection;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -13,12 +13,16 @@ import java.util.Hashtable;
  * @author Akbar Gumbira (akbargumbira@gmail.com)
  */
 public class VectorSpaceModel {
-    //Field vectorSpaceModel yang dihasilkan dari konstruktor
+    /**
+     * FIELD DARI CLASS
+     * 1. VSM = Field vectorSpaceModel yang dihasilkan dari konstruktor
+     */
     public Hashtable<String, Integer> VSM;
 
-    /*
-     * Konstruktor
-     * 
+    /**
+     * KONSTUKTOR DARI CLASS
+     */
+    /** 
      * Membentuk VectorSpaceModel dari sebuah kalimat
      * cth: 
      * input: a boy is crying out loud in a room a boy
@@ -40,6 +44,11 @@ public class VectorSpaceModel {
                 VSM.put(term, value+1);   
         }
     }
+    
+    /**
+     * METHOD DARI CLASS
+     * 1. cosineSimilarity : Menghitung similarity antara VSM ini dengan VSM lain
+     */
     
     /**
      * Method cosineSimilarity: Menghitung similarity antara VSM ini dengan VSM lain
