@@ -102,23 +102,22 @@ public class SiteController extends system.Controller {
             if (statusSummarization == 0)
                 json = new Gson().toJson(_summarizer.summary);
             else if (statusSummarization == 1) {
-                errorSummaryMessage.put("", "The value of minimum support is too small. Frequent term set should be contained by more than 1 document");
+                errorSummaryMessage.put("", "The value of minimum support is too small. Frequent term set should be contained by more than 1 document </br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 2) {
-                errorSummaryMessage.put("", "There's no sentence with this rhetorical status from all documents");
+                errorSummaryMessage.put("", "There's no sentence with this rhetorical status from all documents</br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 3) {
-                errorSummaryMessage.put("", "There's no concept collected from this rhetorical status");
+                errorSummaryMessage.put("", "There's no concept collected from this rhetorical status</br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 4) {
-                errorSummaryMessage.put("", "There's no frequent term set identified by Aprori. It means that there's no common topic there");
+                errorSummaryMessage.put("", "There's no frequent term set identified by Aprori. It means that there's no common topic there</br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else {
                 errorSummaryMessage.put("", "Ini kasus belum ditangani");
                 json = new Gson().toJson(errorSummaryMessage);
             }
 
-            System.out.println("ADADADADAAD"+json);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json);                    
