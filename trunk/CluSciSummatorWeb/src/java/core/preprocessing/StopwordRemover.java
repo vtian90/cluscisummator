@@ -26,8 +26,8 @@ public class StopwordRemover {
      * 3. _stopword = daftar stopword (data internal yang diproses dari file eksternal stopword)
      * 4. _conjungtion = daftar konjungsi (data internal yang diproses dari file eksternal konjungsi)
      */
-    private final String _stopwordFileURL = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\cluscisummator\\CluSciSummator\\data\\stopword.txt";
-    private final String _conjunctionFileURL = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\cluscisummator\\CluSciSummator\\data\\conjunction.txt";
+    private final String _stopwordFileURL = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\cluscisummator\\CluSciSummatorWeb\\data\\stopword.txt";
+    private final String _conjunctionFileURL = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\cluscisummator\\CluSciSummatorWeb\\data\\conjunction.txt";
     private ArrayList<String> _stopword;
     private ArrayList<String> _conjunction;
 
