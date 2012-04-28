@@ -35,6 +35,7 @@
 
             </tr>
         </table>
+        <div id="informasi_retorik"></div> 
     </div>
 </div>
 
@@ -80,7 +81,7 @@
                 }, //DATA
                 function(data) {
                     $("#loading").children().remove();
-                    $.each(data,function(key, value) {
+                    $.each(data, function(key, value) {
                         $("#topics").append('<label class="font1">'+key+'</label></br>');
                         $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+value+'</br></div>');
                     });
@@ -89,5 +90,21 @@
             )
             }
         });
+        
+         $("select[name='kategori_retorik']").change(function () {
+            var selectedRetorik = $("select[name='kategori_retorik'] option:selected").val();
+             $.post(
+                "result", //URL
+                {
+                    kategori_retorik : ""+selectedRetorik,
+                    informasi_retorik : "true"
+                }, //DATA
+                function(data) {
+                    $("#informasi_retorik").html(data);
+                }
+            )
+        })
+        .trigger('change');
+
     });
 </script>
