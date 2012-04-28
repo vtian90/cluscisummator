@@ -4,10 +4,10 @@
  */
 
 
-import clusterer.FTC;
+import clustering.FTC;
 import java.awt.Point;
-import datamodel.DocumentCollection;
-import datamodel.Document;
+import preprocessing.DocumentCollection;
+import preprocessing.Document;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import preprocessor.DocumentCollectionReader;
-import summarizer.CluSciSummator;
-import summarizer.SentenceSelector;
+import preprocessing.DocumentCollectionReader;
+import sentenceselection.CluSciSummator;
+import sentenceselection.SentenceSelector;
 import utility.Global;
 
 /**
@@ -34,15 +34,16 @@ public class Main {
         String URI1 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
         String URI2 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1049_FINAL_1.xml";
         String URI3 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\C02-1144_FINAL_2.xml";
-//        String URI4 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1053(1).xml";
+        //String URI4 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1053(1).xml";
         ArrayList<String> URIS = new ArrayList<String>();
         URIS.add(URI1);
         URIS.add(URI2);
         URIS.add(URI3);
-//        URIS.add(URI4);
+        //URIS.add(URI4);
 
-        CluSciSummator summarizer = new CluSciSummator(URIS, "prev_own", 0.7);
-        summarizer.summarize();
+        CluSciSummator summarizer = new CluSciSummator(URIS);
+        summarizer.processDocuments();
+        summarizer.summarize("aim", 0.7);
         
         Enumeration clusters = summarizer.summarization.keys();
         while (clusters.hasMoreElements()) {
@@ -55,8 +56,100 @@ public class Main {
             System.out.println("");
         }
         
-        
-        
+//        /*
+//         * PENGUJIAN KOMPONEN PREPROCESSING
+//         * 1.	Semua kalimat dengan kategori retorik aim ditampilkan.
+//         * 2.	Perbandingan antara kalimat-kalimat asli dengan kalimat-kalimat yang telah dibuang tanda baca, stopword, dan konjungsinya.
+//         * 3.	Perbandingan antara kalimat-kalimat yang telah dibuang tanda baca, stopword, dan konjungsinya dengan kalimat-kalimat yang telah di word stemming.
+//         * 4.	Semua konsep dan transaksi konsep ditampilkan.
+//         */
+//        
+//         DocumentCollectionReader corpusReader = new DocumentCollectionReader();
+//         corpusReader.parseDocumentCollection(URIS);
+//         DocumentCollection collectionPaper = corpusReader.getParsedDocumentCollection();
+//         collectionPaper.processDocuments();
+//         
+//         /*
+//          * PENGUJIAN 1
+//          */
+//         ArrayList<Document> docs = collectionPaper.getDocumentCollection();
+//         for (Document doc : docs) {
+//             System.out.println("From Paper '" + doc.getTitle() + "':");
+//             for (int i = 0; i < doc.content.get("aim").size(); ++i) {
+//                 System.out.println(doc.content.get("aim").get(i));
+//             }
+//             System.out.println("");
+//         }
+//         
+//         /*
+//          * PENGUJIAN 2
+//          */
+//         
+//         /**
+//          * PENGUJIAN 3
+//          */
+//          System.out.println("ALL CONCEPTS: ");
+//          ArrayList<String> allConcepts = collectionPaper.conceptStrings.get("aim");
+//          System.out.println("Concepts dari " + "aim" + " : " + allConcepts);
+//          System.out.println("Jumlah Concepts dari " + "aim" + " : " + allConcepts.size());
+//          for (int i = 0; i < allConcepts.size(); ++i) {
+//              System.out.print(allConcepts.get(i) + "|");
+//          }
+//          
+//          /* System.out.println("WEKA FORMAT:");
+//            for (int i = 0; i < allConcepts.size(); ++i) {
+//            System.out.println("@attribute " + allConcepts.get(i) + " {P}");
+//            } */
+//
+//            ArrayList<Integer> spaces = new ArrayList<Integer>();
+//            System.out.println("\n");
+//            for (int i = 0; i < allConcepts.size(); ++i) {
+//                System.out.print(allConcepts.get(i) + "|");
+//                spaces.add(allConcepts.get(i).length() - 1);
+//            }
+//
+//            System.out.println("");
+//            for (int i = 0; i < collectionPaper.documentTransactions.get("aim").size(); ++i) {
+//                ArrayList<Boolean> thisTrans = collectionPaper.documentTransactions.get("aim").get(i);
+//                for (int j = 0; j < thisTrans.size(); ++j) {
+//                    if (thisTrans.get(j)) {
+//                        for (int k = 0; k < spaces.get(j); k++) {
+//                            System.out.print(" ");
+//                        }
+//                        System.out.print("P|");
+//                    } else {
+//                        for (int k = 0; k < spaces.get(j); k++) {
+//                            System.out.print(" ");
+//                        }
+//                        System.out.print("?|");
+//                    }
+//                }
+//                System.out.println("");
+//            }
+//         
+//            
+//            /**
+//             * PENGUJIAN KOMPONEN CLUSTERING
+//             * 1. Frequent term set dengan minimum support = 0.7
+//             * 2. Nilai EO dari setiap frequent term set dan frequent term set yang terpilih pada setiap iterasi.
+//             */
+//            
+//            double minimumSupport = 0.7;
+//            int minimumDocumentSupport = (int) Math.round(minimumSupport * collectionPaper.documentTransactions.get("aim").size());
+//            if (minimumDocumentSupport < 2) {
+//                System.out.println("Itemset harus ada di >= 2 dokumen! Naikkan minimum support");
+//            } else {
+//                FTC ftc = new FTC(collectionPaper.conceptStrings.get("aim"), collectionPaper.documentTransactions.get("aim"), minimumSupport);
+//                ftc.filterCluster();
+//
+//                System.out.println("\n-------HASIL FILTERING----------");
+//                Enumeration keys2 = ftc.finalCluster.keys();
+//                while (keys2.hasMoreElements()) {
+//                    ArrayList<String> frequentTermSet = (ArrayList<String>) keys2.nextElement();
+//                    System.out.println(frequentTermSet + ": "
+//                            + ftc.finalCluster.get(frequentTermSet));
+//                }
+//            }
 //        DocumentCollectionReader corpusReader = new DocumentCollectionReader();
 //        corpusReader.parseDocumentCollection(URIS);
 //
