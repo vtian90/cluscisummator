@@ -99,7 +99,7 @@ body{
 .input_summarize {
     font-family: monospace;
     margin: auto;
-    width: 47%;
+    margin-bottom: 10px;
 }
 
 .summarization_result {
