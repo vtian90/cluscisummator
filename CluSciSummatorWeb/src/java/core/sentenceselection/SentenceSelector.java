@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.summarizer;
+package core.sentenceselection;
 
-import core.datamodel.VectorSpaceModel;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -15,24 +14,23 @@ import java.util.Enumeration;
  */
 public class SentenceSelector {
     /* 
-     * FIELD
+     * FIELD DARI CLASS
+     * 1. _lambda : Parameter lambda untuk perhitungan MMR
+     * 2. _processedDocuments : Koleksi dokumen yang telah diproses untuk 1 kategori retorik (katerogi retoriknya sesuai input pengguna)
+     * 3. _R : Koleksi kalimat yang akan di-summarize
+     * 4. _docsIndexes : Indeks dokumen-dokumen yang ingin di ringkas
+     * 5.  _query : Query / ClusterDescription
+     * 6. selectedSentence : Array Kalimat yang terpilih hasil selection, (X,Y): X = indeks dokumen dalam koleksi, Y = indeks kalimat dalam dokumen tsb
      */
-    //Parameter lambda untuk perhitungan MMR
-
     private double _lambda;
-    //Koleksi dokumen yang telah diproses untuk 1 kategori retorik
     private ArrayList<ArrayList<ArrayList<String>>> _processedDocuments;
-    //Koleksi kalimat yang akan di-summarize:
     private ArrayList<ArrayList<String>> _R;
-    //Indeks dokumen-dokumen yang ingin di ringkas
     private ArrayList<Integer> _docsIndexes;
-    //Query / ClusterDescription:
     private ArrayList<String> _query;
-    //Array Kalimat yang terpilih hasil selection, (X,Y): X = indeks dokumen dalam koleksi, Y = indeks kalimat dalam dokumen tsb
     public ArrayList<int[]> selectedSentence;
 
     /**
-     * CONSTRUCTOR
+     * KONSTRUKTOR DARI CLASS
      * @param processedDocuments
      * @param docsIndexes
      * @param query 
@@ -46,8 +44,13 @@ public class SentenceSelector {
     }
 
     /*
-     * METHOD
+     * METHOD DARI CLASS:
+     * 1. initSentenceSelection() : inisiasi pemilihan kalimat
+     * 2. summarize() : Memilih kalimat-kalimat
+     * 3. marginalRelevance() : menghitung MR dari sebuah sentence
+     * 4. sentenceSimilarity() : Menghitung similarity antara 2 kalimat
      */
+    
     /**
      * Method initSentenceSelection: inisiasi pemilihan kalimat
      * 1. Membuat R dari _processedDocument, R = koleksi kalimat yang akan disummarize
@@ -65,15 +68,20 @@ public class SentenceSelector {
         double averageSimilaritySentences = 0;
         int sizeR = this._R.size();
         int numberOfSentenceCombination = (sizeR) * (sizeR - 1) / 2;
+        System.out.println("NUMBER OF SENTENCE COMBINATION = "+numberOfSentenceCombination);
         double sumOfSentenceSimilarity = 0;
         for (int i = 0; i < sizeR - 1; ++i) {
             ArrayList<String> sentence1 = this._R.get(i);
             for (int j = i + i; j < sizeR; ++j) {
                 ArrayList<String> sentence2 = this._R.get(j);
                 double similaritySentence1to2 = sentenceSimilarity(sentence1, sentence2);
+                System.out.println("SEN1"+sentence1);
+                System.out.println("SEN2"+sentence2);
                 sumOfSentenceSimilarity += similaritySentence1to2;
+                System.out.println("SENTENCE SIMILARITY = "+similaritySentence1to2);
             }
         }
+        System.out.println("SUM OF SENTENCE SIMILARITY = "+sumOfSentenceSimilarity);
         averageSimilaritySentences = (double) sumOfSentenceSimilarity/numberOfSentenceCombination;
         System.out.println("average Sentence Similarity" + averageSimilaritySentences);
 
@@ -81,7 +89,7 @@ public class SentenceSelector {
         System.out.println("LAMDA = "+this._lambda);
     }
 
-    /*
+    /**
      * Method summarize: Memilih kalimat-kalimat
      * R: koleksi kalimat yang akan di summarize
      * S: koleksi kalimat yang telah terpilih
@@ -169,11 +177,9 @@ public class SentenceSelector {
     }
 
     /**
-     * Method sentenceSimilarity
+     * Method sentenceSimilarity : Menghitung similarity antara 2 kalimat
      * @param sentence1
      * @param sentence2
-     * 
-     * Menghitung similarity antara 2 kalimat
      * 
      * @return nilai similiary (double)
      */

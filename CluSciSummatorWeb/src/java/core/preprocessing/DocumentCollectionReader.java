@@ -2,10 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.preprocessor;
+package core.preprocessing;
 
-import core.datamodel.Document;
-import core.datamodel.DocumentCollection;
 import java.util.ArrayList;
 
 /**
@@ -30,8 +28,8 @@ public class DocumentCollectionReader {
     
     /*
      * METHOD DARI CLASS
-     * 1. getParsedDocumentCollection() 
-     * 2. parseDocumentCollection(ArrayList<String> URIS)
+     * 1. getParsedDocumentCollection(): Akses _parsedDocumentCollection oleh kelas lain 
+     * 2. parseDocumentCollection(ArrayList<String> URIS): Melakukan parsing semua dokumen XML dari alamat-alamat di URIS
      */
     
     /**
