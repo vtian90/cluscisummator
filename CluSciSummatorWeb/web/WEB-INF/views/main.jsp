@@ -9,7 +9,7 @@
 <%@page import="core.utility.Global" %>
 
 <%
-    ArrayList<String> listOfPapersFileName = (ArrayList<String>) request.getAttribute("listOfPapersFileName");    
+    ArrayList<String> listOfPapersTitle = (ArrayList<String>) request.getAttribute("listOfPapersTitle");    
 %>
 
 
@@ -30,12 +30,12 @@
         </div>   
         </br>
         
-        <% if (listOfPapersFileName.size()!=0) { %>
+        <% if (listOfPapersTitle.size()!=0) { %>
             <div class="uploaded_file" id="uploaded_file">
                 <h2>Uploaded Papers: </h2>
                 <%
-                    for (int i = 0; i < listOfPapersFileName.size(); ++i) {
-                %>  <label class="font1"> <%=i+1 %>. <%= listOfPapersFileName.get(i) %> </label> </br>
+                    for (int i = 0; i < listOfPapersTitle.size(); ++i) {
+                %>  <label class="font1"> <%=i+1 %>. <%= listOfPapersTitle.get(i) %> </label> </br>
                     <%};
                 %>
 

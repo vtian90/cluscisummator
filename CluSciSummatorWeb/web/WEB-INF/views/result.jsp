@@ -57,6 +57,25 @@
 <div class="clearboth"></div>
 
 <script>
+    function printSummary(summaryCluster) {
+        var result = "</br>";
+        
+        jQuery.each(summaryCluster, function(){
+            var detailOfSentence = this;
+            var i = 0;
+            jQuery.each(detailOfSentence, function(){
+                if (i==0)
+                    result += "<label class='font3'>"+this+"</label></br>";
+                else
+                    result += this+"</br>";             
+                ++i;
+            });
+            result += "</br>";              
+        });
+        
+        return result;
+    };
+    
     $(document).ready(function() {  
         $.ajaxSetup ({
             cache: false
@@ -83,7 +102,10 @@
                     $("#loading").children().remove();
                     $.each(data, function(key, value) {
                         $("#topics").append('<label class="font1">'+key+'</label></br>');
-                        $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+value+'</br></div>');
+                        if (key=="")
+                            $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+ value +'</br></div>');
+                        else
+                            $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+ printSummary(value) +'</br></div>');
                     });
                         
                 }

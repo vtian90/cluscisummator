@@ -5,6 +5,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import core.preprocessing.XMLParser;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,13 +100,14 @@ public class SiteController extends system.Controller {
             Hashtable<String, String> errorSummaryMessage = new Hashtable<String, String>();
 
             String json = new Gson().toString();
+            
             if (statusSummarization == 0)
                 json = new Gson().toJson(_summarizer.summary);
             else if (statusSummarization == 1) {
                 errorSummaryMessage.put("", "The value of minimum support is too small. Frequent term set should be contained by more than 1 document </br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 2) {
-                errorSummaryMessage.put("", "There's no sentence with this rhetorical status from all documents</br>");
+                errorSummaryMessage.put("", "here's no sentence with this rhetorical status from all documents</br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 3) {
                 errorSummaryMessage.put("", "There's no concept collected from this rhetorical status</br>");
@@ -137,7 +139,7 @@ public class SiteController extends system.Controller {
      */
     private void getAllFilesInFolder(HttpServletRequest request) {
         ArrayList<String> listOfPapersURI = new ArrayList<String>();
-        ArrayList<String> listOfPapersFileName = new ArrayList<String>();
+        ArrayList<String> listOfPapersTitle = new ArrayList<String>();
         
         //Path folder data/paper:
         String folderPath = getServletContext().getRealPath("/data/paper");
@@ -145,13 +147,19 @@ public class SiteController extends system.Controller {
         File[] listOfFiles = folder.listFiles();
         for (int i = 0; i < listOfFiles.length; ++i) {
             if (listOfFiles[i].getName().endsWith(".xml") || listOfFiles[i].getName().endsWith(".XML")) {
-                listOfPapersFileName.add(listOfFiles[i].getName());
                 listOfPapersURI.add(listOfFiles[i].getAbsolutePath());
+                listOfPapersTitle.add(getPaperTitle(listOfFiles[i].getAbsolutePath()));
             }
         }
         
         request.setAttribute("listOfPaperURI", listOfPapersURI);
-        request.setAttribute("listOfPapersFileName", listOfPapersFileName);
+        request.setAttribute("listOfPapersTitle", listOfPapersTitle);
+    }
+    
+    private String getPaperTitle(String URI) {
+        XMLParser parser = new XMLParser();
+        parser.parseDocument(URI, -1);
+        return parser.getParsedDocument().getTitle();
     }
     
     private ArrayList<String> getListUploadedPapers(){
@@ -253,14 +261,3 @@ public class SiteController extends system.Controller {
             return "";
     }
 }
-
-//                ArrayList<String> papersURI = (ArrayList<String>) request.getAttribute("papersURI");
-//                System.out.println(""+papersURI);
-//                String URI1 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A92-1024(1).xml";
-//                String URI2 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\A97-1049_FINAL_1.xml";
-//                String URI3 = "D:\\Kuliah\\Semester VIII\\TA2\\Implementasi\\Dataset PAPER\\final200511\\C02-1144_FINAL_2.xml";
-//                
-//                ArrayList<String> URIS = new ArrayList<String>();
-//                URIS.add(URI1);
-//                URIS.add(URI2);
-//                URIS.add(URI3);

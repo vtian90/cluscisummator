@@ -192,6 +192,12 @@ body{
     font-weight: bold;
 }
 
+.font3 {
+    font-family: monospace;
+    color: blue;
+    font-weight: bold;
+}
+
 select{
     font-family: georgia;
     -moz-border-radius: 5px;
