@@ -23,12 +23,14 @@ public class CluSciSummator {
     /*
      * FIELD DARI CLASS
      * 1. _documentsLocations: URI dari setiap dokumen sumber
-     * 2. summarization: hasil ringkasan. Key = cluster (term set), Value = kalimat2 hasil ringkasan
+     * 2. summarization: hasil ringkasan. Key = cluster (term set), Value = Summary
+     *    Summary terdiri dari ArrayList<A>, 
+     *    A = ArrayList<String> A[0] = title, A[1] = linknya, A[2] = kalimatnya
      * 3. _collectionPaperProcessed : koleksi dokumen hasil preprocessing
      */
     private ArrayList<String> _documentsLocations;
     private DocumentCollection _collectionPaperProcessed; 
-    public Hashtable<ArrayList<String>, String> summary;
+    public Hashtable<ArrayList<String>, ArrayList<ArrayList<String>>> summary;
 
     /**
      * KONSTRUKTOR DARI CLASS
@@ -84,7 +86,7 @@ public class CluSciSummator {
      * @throws Exception 
      */
     public int summarize(String tagRhetoric, double minimumSupport) throws Exception {
-        this.summary = new Hashtable<ArrayList<String>, String>();
+        this.summary = new Hashtable<ArrayList<String>, ArrayList<ArrayList<String>>>();
         int statusSummarize = 0;
         
         //Jumlah dokumen minimum 
@@ -114,8 +116,9 @@ public class CluSciSummator {
                 while (clusters.hasMoreElements()) {
                         ArrayList<String> frequentTermSet = (ArrayList<String>) clusters.nextElement();
                         ArrayList<Integer> documentsIndex = ftc.finalCluster.get(frequentTermSet);
-                        ArrayList<String> kalimatHasilRingkasan = new ArrayList<String> ();
-                        StringBuilder summaryResult = new StringBuilder(); //buat versi 2
+                        
+                        ArrayList<ArrayList<String>> ringkasanCluster = new ArrayList<ArrayList<String>> ();
+                        
 
                         //Summarize untuk cluster ini 
                         SentenceSelector sentenceSelector = new SentenceSelector(this._collectionPaperProcessed.processedDocuments.get(tagRhetoric), documentsIndex, frequentTermSet);
@@ -125,27 +128,18 @@ public class CluSciSummator {
                             int[] thisSelectedSentencePoint = sentenceSelector.selectedSentence.get(i);
                             int docID = (int) thisSelectedSentencePoint[0];
                             int sentenceIndex = (int) thisSelectedSentencePoint[1];
+                            
+                            String title = this._collectionPaperProcessed.getDocumentByID(docID).getTitle();
                             String sentence = this._collectionPaperProcessed.getDocumentByID(docID).content.get(tagRhetoric).get(sentenceIndex);
 
-                            ArrayList<String> authors = this._collectionPaperProcessed.getDocumentByID(docID).getAuthors();
-                            String author = new String();
-                            author += " (";
-                            int authorsSize = authors.size();
-                            for (int j = 0; j < authorsSize; ++j) {
-                                author += authors.get(j);
-                                if (j != authorsSize-1)
-                                    author +=", ";
-                                else
-                                    author +="). "; 
-                            }
-                            StringBuilder newSentence = new StringBuilder(sentence);
-                            newSentence.replace(sentence.length()-1, sentence.length(), author);
-
-                            kalimatHasilRingkasan.add(newSentence.toString());
-                            summaryResult.append(newSentence.toString());
+                            ArrayList<String> detailKalimatRingkasan = new ArrayList<String>();
+                            detailKalimatRingkasan.add(title);
+                            detailKalimatRingkasan.add(sentence);
+                            ringkasanCluster.add(detailKalimatRingkasan);
                         }
+                        
                         //summarization.put(frequentTermSet, kalimatHasilRingkasan);
-                        this.summary.put(frequentTermSet, summaryResult.toString());
+                        this.summary.put(frequentTermSet, ringkasanCluster);
                     }
             }
         }

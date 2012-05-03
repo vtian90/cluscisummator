@@ -119,7 +119,7 @@ public class SentenceSelector {
                 }
                 System.out.println("MRThisSen: " + theSentence + " = " + MRThisSentence[0]+" Redun = "+MRThisSentence[1]);
             }
-            if (MMR < 0.1) {
+            if (MMR < 0.2) {
                 batasNilaiRelevansi = false;
             } else {
                 System.out.println("SENTENCE SELECTED: " + sentenceSelected);
