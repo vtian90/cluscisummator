@@ -131,9 +131,11 @@ public class CluSciSummator {
                             
                             String title = this._collectionPaperProcessed.getDocumentByID(docID).getTitle();
                             String sentence = this._collectionPaperProcessed.getDocumentByID(docID).content.get(tagRhetoric).get(sentenceIndex);
+                            String filename = this._collectionPaperProcessed.getDocumentByID(docID).getFilename();
 
                             ArrayList<String> detailKalimatRingkasan = new ArrayList<String>();
                             detailKalimatRingkasan.add(title);
+                            detailKalimatRingkasan.add(filename);
                             detailKalimatRingkasan.add(sentence);
                             ringkasanCluster.add(detailKalimatRingkasan);
                         }
