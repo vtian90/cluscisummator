@@ -199,7 +199,38 @@ public class SiteController extends system.Controller {
                         File file = new File(folder, fileName);
 
                         FileOutputStream fileOutputStream = new FileOutputStream(file);
-                        fileOutputStream.write(fileItem.get());
+                        String linkCSS =""+request.getContextPath();
+                        String metadata = "\n<?xml-stylesheet type='text/css' href='"+linkCSS+"/css/paper.css'?>";
+                        byte[] metadataBytes = metadata.getBytes();
+                        byte[] fileBytes = fileItem.get();
+                        char before = '?';
+                        char end = '>';
+                        byte[] allBytes = new byte[fileBytes.length + metadataBytes.length];
+                        
+                        boolean found = true;
+                        int i = 0;
+                        while (found) {
+                            byte beforeThisByte;
+                            if (i != 0) 
+                                beforeThisByte = fileBytes[i-1];
+                            else 
+                                beforeThisByte = 'a';
+                            
+                            byte thisByte = fileBytes[i];
+                            System.out.print((char)thisByte);
+                            if (!(thisByte == end && beforeThisByte == before)) {
+                                allBytes[i] = thisByte;
+                                ++i;
+                            } else {
+                                allBytes[i] = thisByte;
+                                found = false;
+                            }
+                        }
+                        
+                        System.arraycopy(metadataBytes, 0, allBytes, i+1, metadataBytes.length);
+                        System.arraycopy(fileBytes, i+1, allBytes , i+metadataBytes.length+1, fileBytes.length-i-1);
+                        
+                        fileOutputStream.write(allBytes);
                         fileOutputStream.close();
                         _listOfPapersUploadedURI.add(folder+fileName);
                     }
