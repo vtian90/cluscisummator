@@ -18,11 +18,13 @@ public class Document {
      * 1. _ID: ID dokumen
      * 2. _authors: daftar author dokumen
      * 3. _title: Judul makalah
-     * 4. content: Field retorik dokumen. Format : content(rhetoricalStatus, semua kalimat dari dokumen yang memiliki tag kategori retorik = rhetoricalStatus)
+     * 4. _fileName: nama file
+     * 5. content: Field retorik dokumen. Format : content(rhetoricalStatus, semua kalimat dari dokumen yang memiliki tag kategori retorik = rhetoricalStatus)
      */
     private int _ID;
     private ArrayList<String> _authors;
     private String _title;
+    private String _fileName;
     public Hashtable<String, ArrayList<String>> content;
     
     
@@ -70,6 +72,14 @@ public class Document {
     public String getTitle() {
         return _title;
     }
+    
+    /**
+     * Method getFileName: mengembalikan nama file makalah
+     * @return String
+     */
+    public String getFilename() {
+        return _fileName;
+    }
 
     /**
      * Method setID: mengeset ID makalah
@@ -94,4 +104,12 @@ public class Document {
     public void setTitle(String _title) {
         this._title = _title;
     }     
+    
+    /**
+     * Method setFilename(): mengeset filename makalah
+     * @param _title 
+     */
+    public void setFilename(String _filename) {
+        this._fileName = _filename;
+    }   
 }

@@ -4,6 +4,7 @@
  */
 package core.preprocessing;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -52,6 +53,8 @@ public class DocumentCollectionReader {
            XMLParser parser = new XMLParser();
            parser.parseDocument(URI, docID);
            Document parsedDoc = parser.getParsedDocument();
+           File file = new File(URI);
+           parsedDoc.setFilename(file.getName());
            documents.add(parsedDoc);
 
            ++docID;
