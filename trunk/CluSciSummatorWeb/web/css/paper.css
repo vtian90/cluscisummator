@@ -1,0 +1,84 @@
+/* 
+    Document   : paper
+    Created on : 05 Mei 12, 0:38:18
+    Author     : Akbar
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+PAPER, Paper, paper {
+    background-color: rgb(221, 221, 221);
+    margin: 50px 200px 100px 200px;
+    padding: 25px 25px 25px 25px;
+    font: 0.85em/1.5 Arial, Helvetica, sans-serif;
+    text-align: center;
+    
+    -moz-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.3);
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+
+    border-radius : 10px 10px 0px 0px;
+}
+
+TITLE, Title, title {
+    display: block;
+    font-size: 20px;
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+AUTHORS, Authors, authors {
+    display: block;
+    font-style: italic;
+    margin: auto;
+    width: 60%;
+    text-align: center;
+    padding: 10px 0px 10px 0px;
+}
+
+AUTHOR, Author, author {
+    padding-bottom: 10px;
+}
+
+SECTION, Section, section {
+    display: block;
+    margin: 20px 0px 20px 0px;
+    text-align: justify;
+}
+
+SECTIONTITLE, SectionTitle, sectiontitle{
+    display: block;
+    font-weight: bold;
+}
+
+SECTION1TITLE, Section1Title, section1title {
+    font-weight: bold;
+}
+
+SECTION2TITLE, Section2Title, section2title {
+    font-weight: bold;
+}
+
+ABSTRACT, Abstract, abstract {
+    display: block;
+    margin: 20px 0px 20px 0px;
+    text-align: justify;
+}
+
+REFERENCES, References, references {
+    display: block;
+    margin: 20px 0px 20px 0px;
+    text-align: justify;
+}
+
+P, p {
+  display: block;
+  margin: 15px 0px 15px 0px;
+}
