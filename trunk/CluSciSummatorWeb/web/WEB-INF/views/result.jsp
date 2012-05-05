@@ -8,9 +8,6 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Hashtable" %>
 
-
-<% Hashtable<ArrayList<String>, ArrayList<String>> summarization = (Hashtable<ArrayList<String>, ArrayList<String>>) request.getAttribute("summarization");%>
-
 <div class="one_column">
     <div class="input_summarize">
         <table>
@@ -65,7 +62,9 @@
             var i = 0;
             jQuery.each(detailOfSentence, function(){
                 if (i==0)
-                    result += "<label class='font3'>"+this+"</label></br>";
+                    result += "<label class='font3'>"+this+" </label>";
+                else if (i==1)
+                    result += "<a href='data/paper/"+this+"'><label class='font3'>See Section</label></a></br>";
                 else
                     result += this+"</br>";             
                 ++i;
