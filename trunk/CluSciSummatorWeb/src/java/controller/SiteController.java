@@ -17,6 +17,7 @@ import core.sentenceselection.CluSciSummator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import org.apache.commons.fileupload.FileItem;
@@ -101,9 +102,44 @@ public class SiteController extends system.Controller {
 
             String json = new Gson().toString();
             
-            if (statusSummarization == 0)
-                json = new Gson().toJson(_summarizer.summary);
-            else if (statusSummarization == 1) {
+            if (statusSummarization == 0) {
+                Hashtable<ArrayList<String>, ArrayList<ArrayList<String>>> result = new Hashtable<ArrayList<String>, ArrayList<ArrayList<String>>>();
+                
+                String open_tag = "<label class='font3'>";
+                String close_tag = "</label>";
+        
+                Enumeration topics = _summarizer.summary.keys();
+                while (topics.hasMoreElements()) {
+                    ArrayList<String> topic = (ArrayList<String>) topics.nextElement();
+                    ArrayList<ArrayList<String>> ringkasanCluster = _summarizer.summary.get(topic);
+                    for (int i = 0; i < ringkasanCluster.size(); ++i) {
+                        ArrayList<String> ringkasan = ringkasanCluster.get(i);
+                        String kalimatRingkasan = ringkasan.get(2);
+                        
+                        //Tambah tag HTML di sentence:
+                        for (String a_topic : topic) {
+                            if (!("label".contains(a_topic) || "class".contains(a_topic) || a_topic.equalsIgnoreCase("label") || a_topic.equalsIgnoreCase("class"))) {
+                                int index = kalimatRingkasan.toLowerCase().indexOf(a_topic);
+                                while (index != -1) {
+                                    int panjangString = kalimatRingkasan.length();
+
+                                    String before = kalimatRingkasan.substring(0, index);
+                                    String bolded = kalimatRingkasan.substring(index, index + a_topic.length());
+                                    String after = kalimatRingkasan.substring(index + a_topic.length(), panjangString);
+                                    kalimatRingkasan = before + open_tag + bolded + close_tag + after ;   
+
+                                    int pos = index + open_tag.length() + bolded.length() + a_topic.length() + close_tag.length();
+                                    index = kalimatRingkasan.toLowerCase().indexOf(a_topic, pos);
+                                }   
+                            }
+                        }
+                        ringkasan.set(2, kalimatRingkasan);
+                        ringkasanCluster.set(i, ringkasan);
+                    }
+                    result.put(topic, ringkasanCluster);
+                }
+                json = new Gson().toJson(result);  
+            } else if (statusSummarization == 1) {
                 errorSummaryMessage.put("", "The value of minimum support is too small. Frequent term set should be contained by more than 1 document </br>");
                 json = new Gson().toJson(errorSummaryMessage);
             } else if (statusSummarization == 2) {

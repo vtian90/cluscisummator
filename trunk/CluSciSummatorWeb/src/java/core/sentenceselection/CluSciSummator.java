@@ -1,3 +1,7 @@
+
+
+
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -140,7 +144,6 @@ public class CluSciSummator {
                             ringkasanCluster.add(detailKalimatRingkasan);
                         }
                         
-                        //summarization.put(frequentTermSet, kalimatHasilRingkasan);
                         this.summary.put(frequentTermSet, ringkasanCluster);
                     }
             }
