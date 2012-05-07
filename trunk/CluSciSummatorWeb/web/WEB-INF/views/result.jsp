@@ -39,7 +39,7 @@
 <div id="ajax_result">
     <div class="left_column">
         <label class="font2">Topics: </label>
-        </br>
+        </br></br>
         <div id="topics">
         </div>
     </div>
@@ -55,7 +55,7 @@
 
 <script>
     function printSummary(summaryCluster) {
-        var result = "</br>";
+        var result = "";
         
         jQuery.each(summaryCluster, function(){
             var detailOfSentence = this;
@@ -65,8 +65,9 @@
                     result += "<label class='font3'>"+this+" </label>";
                 else if (i==1)
                     result += "<a href='data/paper/"+this+"'><label class='font3'>See Section</label></a></br>";
-                else
-                    result += this+"</br>";             
+                else {
+                    result += this+"</br>";                
+                }
                 ++i;
             });
             result += "</br>";              
@@ -100,11 +101,11 @@
                 function(data) {
                     $("#loading").children().remove();
                     $.each(data, function(key, value) {
-                        $("#topics").append('<label class="font1">'+key+'</label></br>');
+                        $("#topics").append('<label class="font3">'+key+'</label></br><hr>');
                         if (key=="")
                             $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+ value +'</br></div>');
                         else
-                            $("#result").append('<div class="transparent_box"><label class="font1_bold">'+key+'</label></br>'+ printSummary(value) +'</br></div>');
+                            $("#result").append('<div class="transparent_box"><label class="font3">'+key+'</label></br><hr>'+ printSummary(value) +'</br></div>');
                     });
                         
                 }

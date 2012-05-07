@@ -35,7 +35,7 @@
                 <h2>Uploaded Papers: </h2>
                 <%
                     for (int i = 0; i < listOfPapersTitle.size(); ++i) {
-                %>  <label class="font1"> <%=i+1 %>. <%= listOfPapersTitle.get(i) %> </label> </br>
+                %>  <label> <%=i+1 %>. <%= listOfPapersTitle.get(i) %> </label> </br>
                     <%};
                 %>
 
