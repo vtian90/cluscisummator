@@ -24,6 +24,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import system.Helper;
 
 
 /**
@@ -117,21 +118,45 @@ public class SiteController extends system.Controller {
                         String kalimatRingkasan = ringkasan.get(2);
                         
                         //Tambah tag HTML di sentence:
-                        for (String a_topic : topic) {
-                            if (!("label".contains(a_topic) || "class".contains(a_topic) || a_topic.equalsIgnoreCase("label") || a_topic.equalsIgnoreCase("class"))) {
-                                int index = kalimatRingkasan.toLowerCase().indexOf(a_topic);
+                        for (String a_topic : topic) {   
+                            int index = kalimatRingkasan.toLowerCase().indexOf(a_topic);
+                            
+                            if ("class".contains(a_topic)) {
                                 while (index != -1) {
-                                    int panjangString = kalimatRingkasan.length();
+                                    //Cek belakangnya 'label' bukan:
+                                    String beforeString = "";
+                                    if (index > 6)
+                                        beforeString = kalimatRingkasan.substring(index-6, index -1 );
+                                    
+                                    if (beforeString.equals("label")) {                                        
+                                        int pos = index + 1;
+                                        index = kalimatRingkasan.toLowerCase().indexOf(a_topic, pos);
+                                    } else {
+                                        int panjangString = kalimatRingkasan.length();
 
-                                    String before = kalimatRingkasan.substring(0, index);
-                                    String bolded = kalimatRingkasan.substring(index, index + a_topic.length());
-                                    String after = kalimatRingkasan.substring(index + a_topic.length(), panjangString);
-                                    kalimatRingkasan = before + open_tag + bolded + close_tag + after ;   
+                                        String before = kalimatRingkasan.substring(0, index);
+                                        String bolded = kalimatRingkasan.substring(index, index + a_topic.length());
+                                        String after = kalimatRingkasan.substring(index + a_topic.length(), panjangString);
+                                        kalimatRingkasan = before + open_tag + bolded + close_tag + after ;   
 
-                                    int pos = index + open_tag.length() + bolded.length() + a_topic.length() + close_tag.length();
-                                    index = kalimatRingkasan.toLowerCase().indexOf(a_topic, pos);
-                                }   
-                            }
+                                        int pos = index + open_tag.length() + bolded.length() + a_topic.length() + close_tag.length();
+                                        index = kalimatRingkasan.toLowerCase().indexOf(a_topic, pos);   
+                                    }
+                                }
+                            } else {
+                               while (index != -1) {
+                                   int panjangString = kalimatRingkasan.length();
+                                   
+                                   String before = kalimatRingkasan.substring(0, index);
+                                   String bolded = kalimatRingkasan.substring(index, index + a_topic.length());
+                                   String after = kalimatRingkasan.substring(index + a_topic.length(), panjangString);
+                                   kalimatRingkasan = before + open_tag + bolded + close_tag + after ;   
+
+                                   int pos = index + open_tag.length() + bolded.length() + a_topic.length() + close_tag.length();
+                                   index = kalimatRingkasan.toLowerCase().indexOf(a_topic, pos);
+                                }
+                           }
+                           
                         }
                         ringkasan.set(2, kalimatRingkasan);
                         ringkasanCluster.set(i, ringkasan);
@@ -213,70 +238,9 @@ public class SiteController extends system.Controller {
     }
     
     private void uploadPaper(HttpServletRequest request){
-        try {
-            // Get absolute path
-            String folder = getServletContext().getRealPath("/data/paper");
-
-            // Check multipart form
-            boolean isMultiPart = ServletFileUpload.isMultipartContent(request);
-
-            if (isMultiPart) {
-                // Create a new file upload handler
-                ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
-
-                // Parse request
-                List<FileItem> fileItems = upload.parseRequest(request);
-                System.out.println("" + fileItems.size());
-
-                // Process the upload items
-                for (FileItem fileItem : fileItems) {
-                    if (fileItem.getFieldName().equals("paper")) {
-                        String fileName = fileItem.getName();
-                        File file = new File(folder, fileName);
-
-                        FileOutputStream fileOutputStream = new FileOutputStream(file);
-                        String linkCSS =""+request.getContextPath();
-                        String metadata = "\n<?xml-stylesheet type='text/css' href='"+linkCSS+"/css/paper.css'?>";
-                        byte[] metadataBytes = metadata.getBytes();
-                        byte[] fileBytes = fileItem.get();
-                        char before = '?';
-                        char end = '>';
-                        byte[] allBytes = new byte[fileBytes.length + metadataBytes.length];
-                        
-                        boolean found = true;
-                        int i = 0;
-                        while (found) {
-                            byte beforeThisByte;
-                            if (i != 0) 
-                                beforeThisByte = fileBytes[i-1];
-                            else 
-                                beforeThisByte = 'a';
-                            
-                            byte thisByte = fileBytes[i];
-                            System.out.print((char)thisByte);
-                            if (!(thisByte == end && beforeThisByte == before)) {
-                                allBytes[i] = thisByte;
-                                ++i;
-                            } else {
-                                allBytes[i] = thisByte;
-                                found = false;
-                            }
-                        }
-                        
-                        System.arraycopy(metadataBytes, 0, allBytes, i+1, metadataBytes.length);
-                        System.arraycopy(fileBytes, i+1, allBytes , i+metadataBytes.length+1, fileBytes.length-i-1);
-                        
-                        fileOutputStream.write(allBytes);
-                        fileOutputStream.close();
-                        _listOfPapersUploadedURI.add(folder+fileName);
-                    }
-                }
-            }
-        } catch (FileUploadException ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String returnVal = Helper.uploadPaper(request);
+        if (returnVal != null)
+            _listOfPapersUploadedURI.add(returnVal);
     }
     
     private void clearPapers(){
