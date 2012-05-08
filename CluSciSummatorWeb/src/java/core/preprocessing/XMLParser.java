@@ -62,13 +62,15 @@ public class XMLParser {
                 
                 @Override
                 public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                    textBuffer.setLength(0);
+                    if (Global.rhetoricalStatusList.contains(qName.toLowerCase()) || qName.equalsIgnoreCase("paper") || qName.equals("title") || qName.equals("author"))
+                        textBuffer.setLength(0);
+
                 }
 
                 @Override
                 public void endElement(String uri, String localName, String qName) throws SAXException {
                     if (qName.equalsIgnoreCase(Global.listTag.TAG_TITLE.toString())) {
-                        String temp = textBuffer.toString().trim();
+                       String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
                         temp = temp.replaceAll("- ", "");
                         _parsedDocument.setTitle(temp);
@@ -80,7 +82,7 @@ public class XMLParser {
                             int indexRhetoric = Global.rhetoricalStatusList.indexOf(rhetoricStatus);
                             _parsedDocument.content.put(rhetoricStatus, _contentContainer.get(indexRhetoric));
                         }
-                    } else {
+                    } else if (Global.rhetoricalStatusList.contains(qName.toLowerCase())) {
                         String temp = textBuffer.toString().trim();
                         temp = temp.replaceAll("\\r\\n|\\r|\\n", " ");
                         temp = temp.replaceAll("- ", ""); //Buang kesalahan tanda sambung yang banyak di paper. Cth: cluster- ing
