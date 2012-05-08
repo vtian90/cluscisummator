@@ -64,7 +64,7 @@
                 if (i==0)
                     result += "<label class='font3'>"+this+" </label>";
                 else if (i==1)
-                    result += "<a href='data/paper/"+this+"'><label class='font3'>See Paper</label></a></br>";
+                    result += "<a href='data/paper/"+this+"'><label class='font3'>(See Paper)</label></a></br>";
                 else {
                     result += this+"</br>";                
                 }
